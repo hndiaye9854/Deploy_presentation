@@ -358,7 +358,7 @@ footer .logo { width: 96px; height: 36px; }
         <div class="arrow">requête</div>
         <div class="box"><b>Itinéraire</b>réponse JSON</div>
       </div>
-      <p>Le <strong>build</strong> lit la carte OpenStreetMap et fabrique les tuiles : c'est long et gourmand en mémoire. Le <strong>service</strong> lit ces tuiles et calcule des itinéraires en une fraction de seconde : c'est léger. Tout ce qu'on décidera pour le déploiement chez Kalisio découle de cette séparation.</p>
+      <p>Le <strong>build</strong> lit la carte OpenStreetMap et fabrique les tuiles : c'est long et gourmand en mémoire. Le <strong>service</strong> lit ces tuiles et calcule des itinéraires en une fraction de seconde : c'est léger. Tout ce qu'on décidera pour le déploiement découle de cette séparation.</p>
       <div class="callout"><p>Tu l'as déjà vécu sur ton poste : le premier lancement sur Andorre a construit <code>valhalla_tiles.tar</code>, le second l'a simplement chargé avec <code>use_tiles_ignore_pbf=True</code>.</p></div>
     </section>
 
@@ -461,7 +461,7 @@ footer .logo { width: 96px; height: 36px; }
           <tr><td><strong>Baldr</strong></td><td>Structures de données du graphe et lecture des tuiles (GraphId, GraphReader).</td></tr>
           <tr><td><strong>Midgard</strong></td><td>Géométrie : distances, points, polylignes.</td></tr>
           <tr><td><strong>Meili</strong></td><td>Map-matching : recaler une trace GPS bruitée sur les routes.</td></tr>
-          <tr><td><strong>Skadi</strong></td><td>Altitude, à partir de tuiles d'élévation (inutile pour Kalisio pour l'instant).</td></tr>
+          <tr><td><strong>Skadi</strong></td><td>Altitude, à partir de tuiles d'élévation.</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -506,7 +506,7 @@ footer .logo { width: 96px; height: 36px; }
       <div class="tbl-wrap"><table>
         <thead><tr><th>Endpoint</th><th>Question posée</th></tr></thead>
         <tbody>
-          <tr><td><code>/route</code></td><td>Comment aller de A à B (avec étapes éventuelles) ? <span class="tag">besoin Kalisio</span></td></tr>
+          <tr><td><code>/route</code></td><td>Comment aller de A à B (avec étapes éventuelles) ?</td></tr>
           <tr><td><code>/sources_to_targets</code></td><td>Temps et distances entre plusieurs départs et plusieurs arrivées (matrice).</td></tr>
           <tr><td><code>/isochrone</code></td><td>Quelle zone peut-on atteindre en 10, 20, 30 minutes ?</td></tr>
           <tr><td><code>/optimized_route</code></td><td>Dans quel ordre visiter ces points ? (tournée)</td></tr>
@@ -567,7 +567,7 @@ footer .logo { width: 96px; height: 36px; }
           <text class="s" x="477" y="151" text-anchor="middle">le contrat</text>
           <path d="M552,127 L594,127" marker-end="url(#ah)"/>
           <rect class="grp" x="598" y="20" width="200" height="214" rx="12"/>
-          <text class="s" x="698" y="40" text-anchor="middle">kalisio-staging</text>
+          <text class="s" x="698" y="40" text-anchor="middle">cluster</text>
           <rect class="b" x="614" y="54" width="168" height="72" rx="10"/>
           <text class="t" x="698" y="80" text-anchor="middle">Deployment</text>
           <text class="s" x="698" y="99" text-anchor="middle">init : télécharge le tar</text>
@@ -587,14 +587,13 @@ footer .logo { width: 96px; height: 36px; }
           <div class="panel" style="margin:0"><p class="widget-title">La zone devient un paramètre</p><p style="margin:0">Andorre, France ou planète : même chart, seule l'URL du PBF change. On valide la chaîne sur une petite zone avant de payer le gros build.</p></div>
           <div class="panel" style="margin:0"><p class="widget-title">Mise à jour sans coupure</p><p style="margin:0">Nouveau tar sur S3, puis <code>kubectl rollout restart</code>. Les nouveaux pods chargent la nouvelle carte pendant que les anciens répondent encore.</p></div>
         </div>
-        <p style="margin-top:1.4em" class="muted">Proposition de travail, à valider avec Robin : où faire tourner le build planète, et quelle fréquence de mise à jour.</p>
       </div>
     </section>
 
     <!-- 9 -->
     <section class="chap content" id="quiz">
       <div class="chap-head"><span class="chap-num">9</span><h2>Vérifie ta compréhension</h2></div>
-      <p class="lead">Six questions. Si tu les réussis toutes, tu es prêt à défendre l'architecture devant Robin.</p>
+      <p class="lead">Six questions.</p>
       <div id="quiz-box"></div>
       <p class="score" id="quiz-score" aria-live="polite"></p>
     </section>
@@ -1141,7 +1140,6 @@ footer .logo { width: 96px; height: 36px; }
         if (ai !== item.ok) b.classList.add("wrong"); else good++;
         answered++;
         d.querySelector(".fb").innerHTML = "<b>" + (ai === item.ok ? "Exact." : "Pas tout à fait.") + "</b> " + item.e;
-        if (answered === QUIZ.length) $("quiz-score").textContent = "Score : " + good + " sur " + QUIZ.length + (good === QUIZ.length ? ". Prêt pour Robin." : ". Relis les chapitres concernés, puis recharge la page pour réessayer.");
       });
       ch.appendChild(b);
     });
