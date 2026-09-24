@@ -58,7 +58,7 @@ jobs:
             sleep 2
             if docker ps --filter "name=valhalla" \
                --filter "status=running" | grep -q valhalla; then
-              echo "✓ valhalla déployé sur le port 8182."
+              echo "✓ valhalla déployé sur le port 8183."
             else
               echo "ERREUR : le container n'est pas démarré."
               docker logs valhalla
