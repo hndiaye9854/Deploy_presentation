@@ -48,7 +48,7 @@ jobs:
             docker run -d \
               --name valhalla \
               --restart unless-stopped \
-              -p 127.0.0.1:8182:80 \
+              -p 127.0.0.1:8183:80 \
               valhalla:latest
 
             rm -f /tmp/image.tar.gz
