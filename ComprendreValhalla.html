@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comprendre Valhalla — cours Kalisio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens: Kalisio 2026 charter ---------- */
+:root {
+  --logo-img: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiAAAADMCAYAAABKkBjMAAAQAElEQVR4AeydX3bbxpb194Gyen1vzYwg8giukQm0ZSnpdZ+uNQJLI7A8AskjkDwCKSOw8tRr3USiM4HAdwTSHYHV7qfYJs53TlGyKIokCiQAAuQuCyYJFOrPrwpVG6cKhQR0JEACJEACJEACJNAwAQqQhoEzOhIgARIgARIAyIAChHWABEiABEiABEigcQIUII0jZ4QkQAIkQAIkQAIUIKwDJEACJEACJEACjROgAGkcOSMkARIgARIgARKgAGEdIAESIAESIAESaJwABUjjyBkhCZAACZAACZAABQjrAAmQAAmQAAmQQOMEKEAaR84ISYAESIAESIAEKEBYB0iABEiABEiABBonQAHSOHJGSAIkQAIkQAIkQAHCOkACJEACJEACJNA4AQqQxpEzQhIgARIgARIgAQoQ1gESIAESIAESIIHGCTQuQBrPISMkARIgARIgARJoHQEKkNYVCRNEAiRAAiRAApUTaF2AFCCtKxImiARIgARIgARWnwAFyOqXMXNIAiRAAiRAAq0jQAHSuiJhgkiABEiABEhg9QlQgLSsjLOLwUF2mX+07cq+n2Z93WxZEpkcEiCB7hFgikmgdQQoQNpWJCIvoejZtgnIHnLNTIgcgI4ESIAESIAEVogABUjbClPleixJPUCOKUJARwLzE+CZJEACrSNAAdK2IhngzeQkySGHYyaT4V4SIAESIIHuEaAAiSgz6/ifZhf6LrvMfTik1nkZ6c/ywYZdXk9IVg85Xk3Yz10kUESAx0mABEigdQQoQAqKxMTHJlT7gL6A4il8Xob9zv6p9h21uPSnjRMMZN8CHx+OsV38IwESIAESIIHuE6AAKSrDHC/hk0JH/Sk28Z2+Q43OLCFn+CxbQYiongFygs94C7ryBHgGCZAACZBA6whQgMxbJCZCst/02bynx5yX/l2uXYikOxv76ba89t8x59EPCZAACZAACbSdAAVIUQnl+GOqF8EPU4+15wBTQgIkQAIkQAKtI0ABUlAk6U/yHoIPmOS+YLo4meSf+0iABEiABEiABAKB1RcgIZsL/veX7AJyjgdOjjgk8gAIf5AACZAACZBANAEKkAhULjTSbRMhA0lV5Bk+yff2e8p6HREB0gsJkAAJkAAJrDiBouxRgBQRGjme/iwf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);
+  --blue: #13183E; --violet: #6E5AA6; --offwhite: #ECEFF1;
+  --bg: #13183E; --panel: #192055; --panel-2: #001C3A;
+  --code-bg: #0F0D13; --code-text: #ECEFF1;
+  --line: rgba(138,173,226,.22); --line-strong: rgba(138,173,226,.45);
+  --text: #ECEFF1; --muted: #BDBDBD;
+  --accent: #CFBDFE; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+  --accent-soft: rgba(207,189,254,.14);
+  --blue-2: #8AADE2;
+  --ok: #4CAF50; --err: #FFB4AB; --warn: #FBE287;
+  --logo: #CFBDFE;
+  --road-motorway: #8AADE2; --road-primary: #BDBDBD; --road-res: #7A757F;
+  --road-cycle: #4CAF50; --road-foot: #FBE287;
+  --route: #CFBDFE; --explored: rgba(207,189,254,.28);
+  --font: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-ui: "Roboto", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ECEFF1; --panel: #FFFFFF; --panel-2: #E8DDFF;
+    --code-bg: #13183E; --code-text: #ECEFF1;
+    --line: rgba(33,72,118,.16); --line-strong: rgba(33,72,118,.35);
+    --text: #13183E; --muted: #36343A;
+    --accent: #6E5AA6; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+    --accent-soft: rgba(110,90,166,.10);
+    --blue-2: #214876;
+    --ok: #107C10; --err: #BA1A1A; --warn: #534600;
+    --logo: #6E5AA6;
+    --road-motorway: #214876; --road-primary: #7A757F; --road-res: #BDBDBD;
+    --road-cycle: #107C10; --road-foot: #B08A00;
+    --route: #6E5AA6; --explored: rgba(110,90,166,.22);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #ECEFF1; --panel: #FFFFFF; --panel-2: #E8DDFF;
+  --code-bg: #13183E; --code-text: #ECEFF1;
+  --line: rgba(33,72,118,.16); --line-strong: rgba(33,72,118,.35);
+  --text: #13183E; --muted: #36343A;
+  --accent: #6E5AA6; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+  --accent-soft: rgba(110,90,166,.10);
+  --blue-2: #214876;
+  --ok: #107C10; --err: #BA1A1A; --warn: #534600;
+  --logo: #6E5AA6;
+  --road-motorway: #214876; --road-primary: #7A757F; --road-res: #BDBDBD;
+  --road-cycle: #107C10; --road-foot: #B08A00;
+  --route: #6E5AA6; --explored: rgba(110,90,166,.22);
+  color-scheme: light;
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* ---------- Base ---------- */
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 24px); scroll-behavior: smooth; background: var(--bg); }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+img, svg { max-width: 100%; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--font); line-height: 1.15; margin: 0; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.3rem); font-weight: 700; letter-spacing: -.015em; }
+h3 { font-size: 1.2rem; font-weight: 700; margin: 2em 0 .6em; }
+strong { font-weight: 700; }
+code { font-family: var(--font-mono); font-size: .88em; background: var(--accent-soft); padding: .1em .35em; border-radius: 5px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- Layout ---------- */
+.shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1240px; margin: 0 auto; gap: 56px; padding: 0 32px; }
+.toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; height: 100vh; max-height: 100%; padding: 32px 0; display: flex; flex-direction: column; gap: 28px; }
+.logo { display: block; width: 128px; height: 48px; background: var(--logo); -webkit-mask: var(--logo-img) left center / contain no-repeat; mask: var(--logo-img) left center / contain no-repeat; }
+.toc nav ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.toc nav li { counter-increment: toc; }
+.toc nav a { display: grid; grid-template-columns: 28px 1fr; padding: 7px 10px; margin-left: -10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: .92rem; line-height: 1.35; }
+.toc nav a::before { content: counter(toc); font-weight: 700; color: var(--blue-2); }
+.toc nav a:hover { color: var(--text); background: var(--accent-soft); }
+.toc nav a.active { color: var(--text); background: var(--accent-soft); font-weight: 600; }
+.toc nav a.active::before { color: var(--accent); }
+.toc-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; font-size: .82rem; color: var(--muted); }
+.progress { height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.progress span { display: block; height: 100%; width: 0; background: var(--accent-strong); }
+main { min-width: 0; padding: 32px 0 80px; }
+.content { max-width: 720px; }
+.wide { max-width: 980px; }
+section.chap { padding-top: 72px; }
+.chap-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 22px; }
+.chap-num { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 300; color: var(--blue-2); line-height: 1; font-variant-numeric: tabular-nums; }
+.lead { font-size: 1.12rem; color: var(--text); }
+.muted { color: var(--muted); }
+.mobile-bar { display: none; }
+
+@media (max-width: 980px) {
+  .shell { grid-template-columns: 1fr; padding: 0 20px; gap: 0; }
+  .toc { display: none; }
+  .mobile-bar { display: flex; position: sticky; top: 0; z-index: 10; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px; padding-top: calc(10px + env(safe-area-inset-top, 0px)); margin-top: calc(-1 * env(safe-area-inset-top, 0px)); background: var(--bg); border-bottom: 1px solid var(--line); }
+  .mobile-bar .logo { width: 96px; height: 36px; }
+  .mobile-bar .progress { position: absolute; left: 0; right: 0; bottom: -1px; border-radius: 0; height: 3px; background: transparent; }
+  section.chap { padding-top: 56px; }
+}
+
+/* ---------- Hero ---------- */
+.hero { padding-top: 24px; }
+.hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); font-weight: 800; letter-spacing: -.03em; max-width: 15ch; }
+.hero .intro { max-width: 60ch; margin: 20px 0 0; font-size: 1.12rem; color: var(--muted); }
+.hero .by { font-size: .88rem; color: var(--muted); margin-top: 14px; }
+
+/* ---------- Panels & widgets ---------- */
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin: 24px 0; }
+.widget { font-family: var(--font-ui); }
+.widget-title { font-family: var(--font); font-weight: 700; font-size: 1.02rem; margin: 0 0 4px; }
+.widget-hint { font-size: .9rem; color: var(--muted); margin: 0 0 14px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; }
+.seg button { font: 500 .92rem var(--font-ui); color: var(--muted); background: none; border: 0; padding: 8px 14px; border-radius: 9px; cursor: pointer; }
+.seg button:hover { color: var(--text); }
+.seg button[aria-pressed="true"] { background: var(--accent-strong); color: var(--on-accent); }
+.btn { font: 500 .92rem var(--font-ui); background: var(--accent-strong); color: var(--on-accent); border: 0; padding: 9px 16px; border-radius: 10px; cursor: pointer; }
+.btn:hover { filter: brightness(1.1); }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+.btn:disabled { opacity: .4; cursor: default; filter: none; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin-top: 14px; font-size: .92rem; }
+.opts label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.opts input[type=checkbox], .opts input[type=range] { accent-color: var(--accent-strong); }
+.opts input[type=range] { width: 140px; }
+.opts[hidden], .opts label[hidden] { display: none; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 16px; }
+.stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.stat b { display: block; font: 700 1.35rem var(--font); font-variant-numeric: tabular-nums; }
+.stat span { font-size: .8rem; color: var(--muted); }
+.msg { font-size: .9rem; margin-top: 12px; min-height: 1.4em; color: var(--muted); }
+.msg.err { color: var(--err); }
+
+/* Hero map */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 36px; }
+.map-wrap { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.map-wrap svg { display: block; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .8rem; color: var(--muted); margin-top: 10px; }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 6px; }
+svg .node { cursor: pointer; }
+svg .node circle { fill: var(--bg); stroke: var(--muted); stroke-width: 2; transition: r .15s; }
+svg .node:focus { outline: none; }
+svg .node:hover circle, svg .node:focus-visible circle { stroke: var(--accent); stroke-width: 3; }
+svg .node text { font: 600 12px var(--font-ui); fill: var(--text); pointer-events: none; }
+svg .node.settled circle { fill: var(--explored); }
+svg .node.start circle { fill: var(--accent-strong); stroke: var(--accent); }
+svg .node.end circle { fill: var(--bg); stroke: var(--accent); stroke-width: 4; }
+svg .node.start text { fill: #FFFFFF; }
+svg .node.dim { opacity: .35; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; font-family: var(--font-ui); }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.yes { color: var(--ok); font-weight: 500; }
+.no { color: var(--err); font-weight: 500; }
+.tag { display: inline-block; font-size: .78rem; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.tag.est { background: transparent; border: 1px dashed var(--line-strong); color: var(--muted); }
+
+/* Code */
+.code { position: relative; margin: 16px 0; }
+.code pre { margin: 0; background: var(--code-bg); color: var(--code-text); font: 400 13.5px/1.6 var(--font-mono); padding: 16px 18px; border-radius: 12px; overflow-x: auto; white-space: pre; }
+.code .copy { position: absolute; top: 8px; right: 8px; font: 500 .78rem var(--font-ui); background: rgba(236,239,241,.1); color: #ECEFF1; border: 1px solid rgba(236,239,241,.25); padding: 4px 10px; border-radius: 8px; cursor: pointer; }
+.code .copy:hover { background: rgba(236,239,241,.2); }
+.c-cm { color: #8AADE2; }
+
+/* Two-phase figure */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; margin: 26px 0; font-family: var(--font-ui); }
+.flow .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; font-size: .88rem; }
+.flow .box b { display: block; font: 700 .98rem var(--font); margin-bottom: 2px; }
+.flow .arrow { text-align: center; font-size: .78rem; color: var(--muted); line-height: 1.3; }
+.flow .arrow::after { content: ""; display: block; margin: 4px auto 0; width: 28px; height: 2px; background: var(--line-strong); }
+.flow .box.heavy { border-color: var(--line-strong); }
+.flow .box.key { background: var(--accent-soft); border-color: var(--accent); }
+@media (max-width: 720px) {
+  .flow { grid-template-columns: 1fr; }
+  .flow .arrow::after { width: 2px; height: 18px; }
+}
+.callout { border-radius: 12px; padding: 14px 18px; background: var(--accent-soft); margin: 20px 0; }
+.callout p:last-child { margin: 0; }
+.twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .twocol { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } }
+
+/* Tile calculator */
+.tiles-out { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px; align-items: start; margin-top: 16px; }
+@media (max-width: 720px) { .tiles-out { grid-template-columns: 1fr; } }
+.tile-row { display: grid; grid-template-columns: 74px 1fr; gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+.tile-row:last-child { border-bottom: 0; }
+.tile-row .lvl { font-weight: 700; color: var(--accent); }
+.tile-row .path { font-family: var(--font-mono); font-size: .9rem; }
+.coord-in { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; font-size: .9rem; }
+.coord-in input { font: 400 .92rem var(--font-mono); width: 110px; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); }
+.bits { display: flex; height: 44px; border-radius: 10px; overflow: hidden; font: 500 .8rem var(--font-ui); margin: 10px 0 6px; }
+.bits div { display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 6px; }
+.bits .b-l { flex: 3 0 64px; background: var(--accent-strong); color: #FFFFFF; }
+.bits .b-t { flex: 22; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+.bits .b-i { flex: 21; background: var(--bg); color: var(--text); border: 1px solid var(--line); }
+
+/* Pipeline */
+.pipe { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.pipe .god { flex: 1 0 104px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 10px; text-align: center; background: var(--bg); cursor: pointer; font-family: var(--font-ui); color: var(--text); }
+.pipe .god b { display: block; font: 700 1rem var(--font); }
+.pipe .god span { font-size: .78rem; color: var(--muted); }
+.pipe .god.on { border-color: var(--accent); background: var(--accent-soft); }
+.pipe .god.done { border-color: var(--line-strong); }
+.pipe-detail { margin-top: 16px; min-height: 150px; }
+.pipe-detail h4 { margin: 0 0 6px; font: 700 1.05rem var(--font); }
+.pipe-nav { display: flex; gap: 8px; margin-top: 14px; }
+
+/* Request builder */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 18px; font-size: .92rem; }
+.form-grid label.f { display: flex; flex-direction: column; gap: 6px; color: var(--muted); }
+select, .form-grid input[type=text] { font: 400 .92rem var(--font-ui); padding: 8px 10px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); }
+
+/* JSON explainer */
+.json { font: 400 13.5px/1.75 var(--font-mono); background: var(--code-bg); color: var(--code-text); border-radius: 12px; padding: 16px 18px; overflow-x: auto; white-space: pre; }
+.json button { font: inherit; color: #CFBDFE; background: none; border: 0; padding: 0 2px; border-radius: 4px; cursor: pointer; text-decoration: underline dotted rgba(207,189,254,.6); text-underline-offset: 3px; }
+.json button:hover, .json button.on { background: rgba(207,189,254,.18); }
+.explain { margin-top: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); min-height: 76px; font-size: .95rem; }
+.explain b { font-family: var(--font-mono); font-weight: 500; color: var(--accent); }
+
+/* Build stages */
+.stages { display: flex; flex-wrap: wrap; gap: 6px; }
+.stages button { font: 500 .85rem var(--font-mono); padding: 7px 11px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; position: relative; }
+.stages button.seen { border-color: var(--ok); }
+.stages button.on { background: var(--accent-strong); border-color: var(--accent-strong); color: #FFFFFF; }
+.stage-detail { margin-top: 14px; min-height: 84px; font-size: .95rem; }
+.stage-detail .ram { font-size: .82rem; color: var(--muted); }
+
+/* Architecture */
+.arch-wrap { overflow-x: auto; }
+.arch-wrap svg { min-width: 720px; display: block; }
+.arch text { font-family: var(--font-ui); fill: var(--text); }
+.arch .t { font: 700 14px var(--font); }
+.arch .s { font-size: 11.5px; fill: var(--muted); }
+.arch rect.b { fill: var(--panel); stroke: var(--line-strong); }
+.arch rect.k { fill: var(--accent-soft); stroke: var(--accent); }
+.arch rect.grp { fill: none; stroke: var(--line-strong); stroke-dasharray: 5 5; }
+.arch path, .arch line { stroke: var(--blue-2); stroke-width: 1.6; fill: none; }
+
+/* Quiz */
+.q { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.q:last-of-type { border-bottom: 0; }
+.q p.qt { font-weight: 600; margin-bottom: 10px; }
+.q .choices { display: grid; gap: 8px; font-family: var(--font-ui); }
+.q .choices button { text-align: left; font: 400 .95rem var(--font-ui); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); cursor: pointer; }
+.q .choices button:hover:not(:disabled) { border-color: var(--accent); }
+.q .choices button.right { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
+.q .choices button.wrong { border-color: var(--err); opacity: .8; }
+.q .choices button:disabled { cursor: default; }
+.q .fb { font-size: .92rem; margin-top: 10px; color: var(--muted); }
+.q .fb b { color: var(--text); }
+.score { font: 700 1.1rem var(--font); margin-top: 18px; }
+
+footer { margin-top: 96px; padding-top: 28px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+footer .logo { width: 96px; height: 36px; }
+.theme-btn { font: 500 .82rem var(--font-ui); background: none; border: 1px solid var(--line-strong); color: var(--text); padding: 6px 12px; border-radius: 999px; cursor: pointer; align-self: flex-start; }
+</style>
+</head>
+<body>
+<div class="mobile-bar">
+  <span class="logo" role="img" aria-label="Kalisio"></span>
+  <button class="theme-btn" data-theme-toggle type="button">Changer de thème</button>
+  <div class="progress"><span></span></div>
+</div>
+
+<div class="shell">
+  <aside class="toc" aria-label="Sommaire">
+    <span class="logo" role="img" aria-label="Kalisio"></span>
+    <nav>
+      <ol>
+        <li><a href="#idee">L'idée en une minute</a></li>
+        <li><a href="#graphe">De la carte au graphe</a></li>
+        <li><a href="#tuiles">Les tuiles hiérarchiques</a></li>
+        <li><a href="#costing">Le costing dynamique</a></li>
+        <li><a href="#requete">Le voyage d'une requête</a></li>
+        <li><a href="#api">Parler à l'API</a></li>
+        <li><a href="#build">Build et service</a></li>
+        <li><a href="#kalisio">Et chez Kalisio ?</a></li>
+        <li><a href="#quiz">Vérifie ta compréhension</a></li>
+      </ol>
+    </nav>
+    <div class="toc-foot">
+      <div class="progress"><span></span></div>
+      <span>Comprendre  Valhalla</span>
+      <button class="theme-btn" data-theme-toggle type="button">Changer de thème</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <h1>Valhalla, de la carte au trajet</h1>
+      <p class="intro">Un cours pour comprendre comment fonctionne le moteur d'itinéraires avant de le déployer chez Kalisio. Commence par jouer avec ce mini-Valhalla : choisis un mode de transport, clique deux carrefours, et regarde le trajet changer.</p>
+
+      <div class="panel widget wide" id="router">
+        <p class="widget-title">Un mini-moteur d'itinéraires</p>
+        <p class="widget-hint" id="r-hint">Clique un carrefour pour choisir le départ, puis un autre pour l'arrivée.</p>
+        <div class="seg" role="group" aria-label="Mode de transport">
+          <button type="button" data-costing="auto" aria-pressed="true">Voiture</button>
+          <button type="button" data-costing="bicycle" aria-pressed="false">Vélo</button>
+          <button type="button" data-costing="pedestrian" aria-pressed="false">Piéton</button>
+        </div>
+        <div class="opts" id="opt-auto">
+          <label><input type="checkbox" id="o-tolls"> Éviter les péages <code>use_tolls: 0</code></label>
+          <label><input type="checkbox" id="o-hw"> Éviter les autoroutes <code>use_highways: 0</code></label>
+        </div>
+        <div class="opts" id="opt-bike" hidden>
+          <label>Goût pour les routes <input type="range" id="o-roads" min="0" max="1" step="0.1" value="0.5"> <code id="o-roads-v">use_roads: 0.5</code></label>
+        </div>
+        <div class="hero-grid">
+          <div class="map-wrap"><svg id="r-svg" viewBox="0 0 600 400" role="img" aria-label="Plan d'une petite ville avec routes, pistes cyclables et chemins"></svg></div>
+        </div>
+        <div class="legend">
+          <span><i style="border-color:var(--road-motorway);border-top-width:5px"></i>Autoroute</span>
+          <span><i style="border-color:var(--road-primary)"></i>Route principale</span>
+          <span><i style="border-color:var(--road-res)"></i>Rue résidentielle</span>
+          <span><i style="border-color:var(--road-cycle);border-top-style:dashed"></i>Piste cyclable</span>
+          <span><i style="border-color:var(--road-foot);border-top-style:dotted"></i>Chemin piéton</span>
+          <span><i style="border-color:var(--route);border-top-width:5px"></i>Itinéraire</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="r-time">–</b><span>Temps estimé</span></div>
+          <div class="stat"><b id="r-dist">–</b><span>Distance</span></div>
+          <div class="stat"><b id="r-exp">–</b><span>Carrefours explorés</span></div>
+        </div>
+        <p class="msg" id="r-msg"></p>
+      </div>
+      <p class="muted content">À essayer : de F à J dans les trois modes, puis de K à E en voiture avant et après avoir coché « Éviter les péages ». Tu viens de voir le cœur de Valhalla ; la suite explique ce qui se passe derrière.</p>
+    </header>
+
+    <!-- 1 -->
+    <section class="chap content" id="idee">
+      <div class="chap-head"><span class="chap-num">1</span><h2>L'idée en une minute</h2></div>
+      <p class="lead">Valhalla transforme une carte en réseau routier une bonne fois pour toutes, puis répond très vite à des questions sur ce réseau.</p>
+      <p>Pense à un atlas routier. Le fabriquer est long : il faut relever toutes les routes, les classer, les découper en pages, ajouter l'index. Mais une fois imprimé, un copilote trouve un trajet en quelques secondes en feuilletant les bonnes pages. Valhalla fonctionne exactement comme ça, en deux temps.</p>
+      <div class="flow" aria-label="Les deux phases de Valhalla">
+        <div class="box"><b>Carte OSM</b>fichier .osm.pbf de Geofabrik</div>
+        <div class="arrow">build<br>lourd, rare</div>
+        <div class="box key"><b>Tuiles</b>le graphe routier découpé, dans un .tar</div>
+        <div class="arrow">service<br>léger, permanent</div>
+        <div class="box"><b>API HTTP</b>port 8002</div>
+        <div class="arrow">requête</div>
+        <div class="box"><b>Itinéraire</b>réponse JSON</div>
+      </div>
+      <p>Le <strong>build</strong> lit la carte OpenStreetMap et fabrique les tuiles : c'est long et gourmand en mémoire. Le <strong>service</strong> lit ces tuiles et calcule des itinéraires en une fraction de seconde : c'est léger. Tout ce qu'on décidera pour le déploiement chez Kalisio découle de cette séparation.</p>
+      <div class="callout"><p>Tu l'as déjà vécu sur ton poste : le premier lancement sur Andorre a construit <code>valhalla_tiles.tar</code>, le second l'a simplement chargé avec <code>use_tiles_ignore_pbf=True</code>.</p></div>
+    </section>
+
+    <!-- 2 -->
+    <section class="chap content" id="graphe">
+      <div class="chap-head"><span class="chap-num">2</span><h2>De la carte au graphe</h2></div>
+      <p class="lead">OpenStreetMap décrit le monde avec des points et des lignes. Pour calculer un trajet, Valhalla a besoin d'autre chose : un graphe.</p>
+      <p>Dans OSM, une rue est une <strong>way</strong> : une suite de <strong>nodes</strong> (des points latitude/longitude), accompagnée de tags comme <code>highway=residential</code>, <code>maxspeed=30</code> ou <code>oneway=yes</code>. Beaucoup de ces points ne servent qu'à dessiner la courbe de la rue. Les <strong>relations</strong> décrivent le reste, par exemple une interdiction de tourner à gauche.</p>
+      <p>Valhalla ne garde comme <strong>nœuds</strong> que les intersections. Entre deux intersections, il crée des <strong>arêtes orientées</strong>, une par sens de circulation. Une rue à sens unique a quand même ses deux arêtes, mais l'une d'elles est interdite aux voitures. Les points intermédiaires deviennent la forme de l'arête, utilisée seulement pour dessiner le tracé.</p>
+      <div class="panel widget">
+        <p class="widget-title">Même quartier, deux regards</p>
+        <p class="widget-hint">Bascule entre la vision OSM et la vision Valhalla.</p>
+        <div class="seg" role="group" aria-label="Vue">
+          <button type="button" data-view="osm" aria-pressed="true">Vue OSM</button>
+          <button type="button" data-view="graph" aria-pressed="false">Vue graphe Valhalla</button>
+        </div>
+        <div class="map-wrap" style="margin-top:14px"><svg id="g-svg" viewBox="0 0 600 400" role="img" aria-label="Comparaison vue OSM et vue graphe"></svg></div>
+        <p class="msg" id="g-msg"></p>
+      </div>
+      <p>C'est ce graphe qui rend le calcul possible : un algorithme de plus court chemin ne sait parcourir que des nœuds reliés par des arêtes qui ont un coût.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="chap content" id="tuiles">
+      <div class="chap-head"><span class="chap-num">3</span><h2>Les tuiles hiérarchiques</h2></div>
+      <p class="lead">Le graphe de la planète ne tient pas d'un seul bloc. Valhalla le découpe en tuiles carrées, sur trois niveaux.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Niveau</th><th>Ce qu'il contient</th><th>Taille d'une tuile</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Autoroutes, voies rapides, grands axes</td><td class="num">4° × 4°</td></tr>
+          <tr><td>1</td><td>Routes secondaires et tertiaires</td><td class="num">1° × 1°</td></tr>
+          <tr><td>2</td><td>Rues locales, chemins, pistes</td><td class="num">0,25° × 0,25°</td></tr>
+        </tbody>
+      </table></div>
+      <p>Pourquoi trois niveaux ? Pour un trajet Toulouse–Berlin, explorer chaque impasse serait absurde. L'algorithme part des rues locales, monte vers les grands axes dès qu'il s'éloigne du départ, puis redescend près de l'arrivée. C'est ce qu'on fait instinctivement avec une carte : on cherche l'autoroute, pas toutes les ruelles entre les deux villes.</p>
+      <p>Chaque tuile est un fichier <code>.gph</code>. Son nom se calcule à partir de la grille : on numérote les lignes et les colonnes depuis le coin sud-ouest du monde (-90°, -180°), puis <code>id = ligne × nombre_de_colonnes + colonne</code>.</p>
+
+      <div class="panel widget">
+        <p class="widget-title">Dans quelle tuile est ce point ?</p>
+        <p class="widget-hint">Choisis un lieu ou saisis des coordonnées.</p>
+        <div class="seg" role="group" aria-label="Lieu" id="t-places"></div>
+        <div class="coord-in">
+          <label>lat <input type="text" id="t-lat" inputmode="decimal"></label>
+          <label>lon <input type="text" id="t-lon" inputmode="decimal"></label>
+          <button class="btn ghost" id="t-go" type="button">Calculer</button>
+        </div>
+        <div class="tiles-out">
+          <div id="t-rows"></div>
+          <svg id="t-svg" viewBox="0 0 340 186" role="img" aria-label="Tuile de niveau 0 et tuile de niveau 1 contenant le point"></svg>
+        </div>
+      </div>
+      <div class="callout"><p>À vérifier sur ton poste : <code>tar tf ~/valhalla-test/custom_files/valhalla_tiles.tar</code>. Tu dois retrouver les chemins calculés pour Andorre-la-Vieille parmi les 7 tuiles construites.</p></div>
+
+      <h3>L'adresse d'un élément du graphe</h3>
+      <p>Chaque nœud ou arête a un identifiant de 64 bits, le <strong>GraphId</strong>, qui dit où le trouver : le niveau, la tuile, puis sa position dans la tuile. Avec ces trois nombres, Valhalla ouvre directement le bon fichier sans rien chercher.</p>
+      <div class="bits" aria-label="Découpage du GraphId">
+        <div class="b-l">niveau<br>3 bits</div>
+        <div class="b-t">numéro de tuile, 22 bits</div>
+        <div class="b-i">index dans la tuile, 21 bits</div>
+      </div>
+      <p class="muted" style="font-size:.9rem">C'est la notation <code>2/763926/1043</code> que tu croiseras dans les logs et les réponses de debug.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="chap content" id="costing">
+      <div class="chap-head"><span class="chap-num">4</span><h2>Le costing dynamique</h2></div>
+      <p class="lead">Chaque arête porte des faits : longueur, type de route, vitesse, péage, sens unique. Le costing transforme ces faits en réponse à deux questions : ai-je le droit de passer, et combien ça me coûte ?</p>
+      <p>Le module qui fait ce travail s'appelle <strong>Sif</strong>. Il existe un modèle par mode : <code>auto</code>, <code>bicycle</code>, <code>pedestrian</code>, <code>truck</code>, <code>motorcycle</code>, <code>bus</code>… L'algorithme cherche le chemin dont la somme des coûts est la plus faible, pas forcément le plus court ni le plus rapide.</p>
+      <div class="panel widget">
+        <p class="widget-title">Ce que Sif applique en ce moment dans la démo</p>
+        <p class="widget-hint" id="c-hint"></p>
+        <div class="tbl-wrap" style="margin:0"><table>
+          <thead><tr><th>Type d'arête</th><th>Autorisée</th><th>Vitesse</th><th>Pénalité</th></tr></thead>
+          <tbody id="c-body"></tbody>
+        </table></div>
+        <div class="opts"><a href="#router">Revenir à la démo pour changer le mode</a></div>
+      </div>
+      <p>Point essentiel : ce calcul se fait <strong>au moment de la requête</strong>. Tu peux demander « évite les péages » ou « camion de 4 m de haut » dans une requête, et le trajet suivant sera calculé normalement, sans rien reconstruire. Le graphe ne contient que des faits ; les préférences arrivent avec la question.</p>
+      <div class="callout"><p>C'est la grande différence avec OSRM, l'autre moteur open source connu. OSRM intègre le profil de véhicule dans ses données au moment du build pour aller plus vite. Changer une préférence y demande un nouveau build. Valhalla échange un peu de vitesse contre beaucoup de souplesse.</p></div>
+      <p>Remarque aussi que le coût n'est pas le temps. Dans la démo, cocher « Éviter les péages » ne rend pas l'autoroute plus lente, il la rend plus chère. C'est pour ça que la réponse de l'API contient à la fois <code>time</code> et <code>cost</code>.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="chap content" id="requete">
+      <div class="chap-head"><span class="chap-num">5</span><h2>Le voyage d'une requête</h2></div>
+      <p class="lead">Les modules de Valhalla portent des noms de la mythologie nordique. Tu en as déjà vu un dans tes logs de build : <code>src/mjolnir/…</code>. Voici ceux qui traitent un appel à <code>/route</code>, dans l'ordre.</p>
+      <div class="panel widget">
+        <div class="pipe" id="pipe" role="tablist" aria-label="Étapes du traitement"></div>
+        <div class="pipe-detail" id="pipe-detail" role="tabpanel"></div>
+        <div class="pipe-nav">
+          <button class="btn ghost" id="pipe-prev" type="button">Étape précédente</button>
+          <button class="btn" id="pipe-next" type="button">Étape suivante</button>
+        </div>
+      </div>
+      <h3>Les autres modules à connaître</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Module</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mjolnir</strong></td><td>Construit les tuiles à partir d'OSM. C'est lui qui tourne pendant le build.</td></tr>
+          <tr><td><strong>Baldr</strong></td><td>Structures de données du graphe et lecture des tuiles (GraphId, GraphReader).</td></tr>
+          <tr><td><strong>Midgard</strong></td><td>Géométrie : distances, points, polylignes.</td></tr>
+          <tr><td><strong>Meili</strong></td><td>Map-matching : recaler une trace GPS bruitée sur les routes.</td></tr>
+          <tr><td><strong>Skadi</strong></td><td>Altitude, à partir de tuiles d'élévation (inutile pour Kalisio pour l'instant).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="chap content" id="api">
+      <div class="chap-head"><span class="chap-num">6</span><h2>Parler à l'API</h2></div>
+      <p class="lead">L'API est en HTTP, avec un corps JSON envoyé en POST. Une requête minimale tient en deux informations : des <code>locations</code> et un <code>costing</code>.</p>
+      <div class="panel widget">
+        <p class="widget-title">Construis ta requête</p>
+        <p class="widget-hint">Les points sont ceux de ton test sur Andorre. Modifie les options, puis copie la commande.</p>
+        <div class="form-grid">
+          <label class="f">Mode
+            <select id="b-costing">
+              <option value="auto">auto (voiture)</option>
+              <option value="bicycle">bicycle (vélo)</option>
+              <option value="pedestrian">pedestrian (piéton)</option>
+              <option value="truck">truck (poids lourd)</option>
+            </select>
+          </label>
+          <label class="f">Serveur
+            <input type="text" id="b-host" value="localhost:8002" spellcheck="false">
+          </label>
+        </div>
+        <div class="opts" id="b-opts">
+          <label id="b-tolls-l"><input type="checkbox" id="b-tolls"> Éviter les péages</label>
+          <label id="b-hw-l"><input type="checkbox" id="b-hw"> Éviter les autoroutes</label>
+          <label id="b-h-l" hidden><input type="checkbox" id="b-h"> Hauteur 4,2 m</label>
+          <label><input type="checkbox" id="b-fr" checked> Instructions en français</label>
+          <label><input type="checkbox" id="b-none"> Sans instructions, juste temps et distance</label>
+        </div>
+        <div class="code"><button class="copy" type="button" data-copy="b-curl">Copier</button><pre id="b-curl"></pre></div>
+      </div>
+
+      <h3>Lire la réponse</h3>
+      <p>Voici le résumé que tu as obtenu sur ton poste. Clique sur chaque champ pour savoir ce qu'il veut dire.</p>
+      <div class="json" id="resp"></div>
+      <div class="explain" id="resp-explain" aria-live="polite">Clique sur un champ en violet.</div>
+      <p style="margin-top:1em">La réponse complète contient aussi, pour chaque étape du trajet (<code>legs</code>), la liste des manœuvres et le tracé dans <code>shape</code>. Le tracé est une polyligne encodée avec une précision de 6 décimales : les bibliothèques de carte savent la décoder.</p>
+
+      <h3>Les autres points d'entrée</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Endpoint</th><th>Question posée</th></tr></thead>
+        <tbody>
+          <tr><td><code>/route</code></td><td>Comment aller de A à B (avec étapes éventuelles) ? <span class="tag">besoin Kalisio</span></td></tr>
+          <tr><td><code>/sources_to_targets</code></td><td>Temps et distances entre plusieurs départs et plusieurs arrivées (matrice).</td></tr>
+          <tr><td><code>/isochrone</code></td><td>Quelle zone peut-on atteindre en 10, 20, 30 minutes ?</td></tr>
+          <tr><td><code>/optimized_route</code></td><td>Dans quel ordre visiter ces points ? (tournée)</td></tr>
+          <tr><td><code>/trace_route</code></td><td>Quelles routes a vraiment suivi cette trace GPS ?</td></tr>
+          <tr><td><code>/locate</code></td><td>Sur quelle arête ce point s'accroche-t-il ? Utile pour déboguer.</td></tr>
+          <tr><td><code>/status</code></td><td>Le service est-il prêt ? C'est ce qu'on utilisera pour les sondes Kubernetes.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><p><strong>Piège pour une couverture mondiale :</strong> la configuration impose des limites par mode, dans <code>service_limits</code>. Par défaut, un trajet en voiture est plafonné à quelques milliers de kilomètres et à 20 points. Pour des trajets intercontinentaux, il faudra relever ces valeurs dans <code>valhalla.json</code>.</p></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="chap content" id="build">
+      <div class="chap-head"><span class="chap-num">7</span><h2>Build et service : pourquoi deux mondes</h2></div>
+      <p class="lead">Le build lit toute la région d'un coup ; le service ne lit que les tuiles dont il a besoin. D'où l'écart énorme de ressources.</p>
+      <p>Le build se déroule en étapes. Celles entourées en vert apparaissaient dans les logs de ton build Andorre. Clique pour voir ce que fait chacune.</p>
+      <div class="panel widget">
+        <div class="stages" id="stages"></div>
+        <div class="stage-detail" id="stage-detail"></div>
+      </div>
+      <p>Pendant les premières étapes, Mjolnir doit connaître toutes les voies et tous les points de la zone en même temps pour savoir lesquels sont des intersections. Il les stocke dans de gros fichiers temporaires projetés en mémoire. Plus le PBF est gros, plus il faut de RAM et de disque. C'est ce qui fait passer d'une minute pour Andorre à une journée pour la planète.</p>
+      <p>Le service, lui, ouvre le <code>valhalla_tiles.tar</code> et le projette en mémoire (<em>mmap</em>). Le système ne charge réellement que les pages lues. Un trajet en Andorre ne touche qu'une poignée de tuiles, même si le tar contient le monde entier. Le démarrage est donc rapide et la RAM dépend surtout du trafic et des caches, pas de la taille de la carte.</p>
+
+      <h3>Les chiffres qu'on a, et ceux qui manquent</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Zone</th><th>Build</th><th>Pic RAM build</th><th>Tar</th><th>RAM service</th></tr></thead>
+        <tbody>
+          <tr><td>Andorre <span class="tag">mesuré, knuc5</span></td><td class="num">&lt; 1 min</td><td class="num">375 Mo</td><td class="num">3 Mo</td><td class="num">374 Mo</td></tr>
+          <tr><td>France <span class="tag est">à mesurer</span></td><td class="num">plusieurs heures ?</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+          <tr><td>Planète <span class="tag est">retours communauté</span></td><td class="num">≈ 24 h à 60 h</td><td class="num">32 à 64 Go</td><td class="num">?</td><td class="num">?</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="font-size:.9rem">Les ~375 Mo d'Andorre sont un coût fixe (processus, threads, bases admin et fuseaux horaires), pas le poids des tuiles. Le build France dira comment ces chiffres grandissent.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="chap wide" id="kalisio">
+      <div class="content">
+        <div class="chap-head"><span class="chap-num">8</span><h2>Et chez Kalisio ?</h2></div>
+        <p class="lead">Tout ce qui précède mène à une architecture simple : le build et le service ne communiquent que par un fichier.</p>
+        <p>Le fichier <code>valhalla_tiles.tar</code> déposé sur S3 est le seul contrat entre les deux mondes. Le build peut tourner n'importe où, tant qu'il y a assez de RAM. Le service se contente de télécharger le tar et de répondre.</p>
+      </div>
+      <div class="panel arch-wrap">
+        <svg class="arch" viewBox="0 0 940 250" role="img" aria-label="Architecture proposée : build, S3, service Kubernetes et applications">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--blue-2);stroke:none"/></marker></defs>
+          <rect class="b" x="10" y="95" width="130" height="64" rx="10"/>
+          <text class="t" x="75" y="122" text-anchor="middle">Geofabrik</text>
+          <text class="s" x="75" y="142" text-anchor="middle">fichiers .osm.pbf</text>
+          <path d="M140,127 L182,127" marker-end="url(#ah)"/>
+          <rect class="b" x="186" y="85" width="170" height="84" rx="10"/>
+          <text class="t" x="271" y="113" text-anchor="middle">Job de build</text>
+          <text class="s" x="271" y="133" text-anchor="middle">serve_tiles=False</text>
+          <text class="s" x="271" y="151" text-anchor="middle">gros nœud, ponctuel</text>
+          <path d="M356,127 L398,127" marker-end="url(#ah)"/>
+          <rect class="k" x="402" y="85" width="150" height="84" rx="10"/>
+          <text class="t" x="477" y="113" text-anchor="middle">S3</text>
+          <text class="s" x="477" y="133" text-anchor="middle">valhalla_tiles.tar</text>
+          <text class="s" x="477" y="151" text-anchor="middle">le contrat</text>
+          <path d="M552,127 L594,127" marker-end="url(#ah)"/>
+          <rect class="grp" x="598" y="20" width="200" height="214" rx="12"/>
+          <text class="s" x="698" y="40" text-anchor="middle">kalisio-staging</text>
+          <rect class="b" x="614" y="54" width="168" height="72" rx="10"/>
+          <text class="t" x="698" y="80" text-anchor="middle">Deployment</text>
+          <text class="s" x="698" y="99" text-anchor="middle">init : télécharge le tar</text>
+          <text class="s" x="698" y="115" text-anchor="middle">puis sert l'API</text>
+          <path d="M698,126 L698,156" marker-end="url(#ah)"/>
+          <rect class="b" x="614" y="160" width="168" height="58" rx="10"/>
+          <text class="t" x="698" y="185" text-anchor="middle">Service</text>
+          <text class="s" x="698" y="204" text-anchor="middle">ClusterIP :8002</text>
+          <path d="M782,189 L824,189" marker-end="url(#ah)"/>
+          <rect class="b" x="828" y="155" width="104" height="68" rx="10"/>
+          <text class="t" x="880" y="183" text-anchor="middle">Apps</text>
+          <text class="s" x="880" y="202" text-anchor="middle">HTTP, routingjs</text>
+        </svg>
+      </div>
+      <div class="content">
+        <div class="twocol">
+          <div class="panel" style="margin:0"><p class="widget-title">La zone devient un paramètre</p><p style="margin:0">Andorre, France ou planète : même chart, seule l'URL du PBF change. On valide la chaîne sur une petite zone avant de payer le gros build.</p></div>
+          <div class="panel" style="margin:0"><p class="widget-title">Mise à jour sans coupure</p><p style="margin:0">Nouveau tar sur S3, puis <code>kubectl rollout restart</code>. Les nouveaux pods chargent la nouvelle carte pendant que les anciens répondent encore.</p></div>
+        </div>
+        <p style="margin-top:1.4em" class="muted">Proposition de travail, à valider avec Robin : où faire tourner le build planète, et quelle fréquence de mise à jour.</p>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="chap content" id="quiz">
+      <div class="chap-head"><span class="chap-num">9</span><h2>Vérifie ta compréhension</h2></div>
+      <p class="lead">Six questions. Si tu les réussis toutes, tu es prêt à défendre l'architecture devant Robin.</p>
+      <div id="quiz-box"></div>
+      <p class="score" id="quiz-score" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <span class="logo" role="img" aria-label="Kalisio"></span>
+      <span>Support de formation interne, mission Valhalla, 2026. Sources : documentation et dépôt valhalla/valhalla.</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function () {
+  "use strict";
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fmtTime(sec) {
+    var m = Math.floor(sec / 60), s = Math.round(sec % 60);
+    if (s === 60) { m += 1; s = 0; }
+    return m + " min " + String(s).padStart(2, "0");
+  }
+  function fmtKm(km) { return km.toFixed(1).replace(".", ",") + " km"; }
+
+  /* ---------- Theme ---------- */
+  function currentTheme() {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t) return t;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+  try { var saved = localStorage.getItem("valhalla-course-theme"); if (saved) document.documentElement.setAttribute("data-theme", saved); } catch (e) {}
+  document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("valhalla-course-theme", next); } catch (e) {}
+    });
+  });
+
+  /* ---------- TOC + progress ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".toc nav a"));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  function onScroll() {
+    var h = document.documentElement;
+    var p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+    document.querySelectorAll(".progress span").forEach(function (s) { s.style.width = (p * 100).toFixed(1) + "%"; });
+    var idx = -1;
+    sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < window.innerHeight * 0.35) idx = i; });
+    links.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* ---------- Shared network ---------- */
+  var UNIT_KM = 0.02; // 1 svg unit = 20 m
+  var NODES = [
+    [70,150,"A"],[170,150,"B"],[300,150,"C"],[430,150,"D"],[530,150,"E"],
+    [70,260,"F"],[170,260,"G"],[300,260,"H"],[430,260,"I"],[530,260,"J"],
+    [70,360,"K"],[230,350,"L"],[400,360,"M"],[530,360,"N"],
+    [40,50,"S1"],[300,40,"S2"],[560,50,"S3"]
+  ];
+  // [from, to, type, flags] ; oneway means only from -> to (cars and bikes)
+  var EDGES = [
+    [14,15,"motorway"],[15,16,"motorway",{toll:true}],[14,0,"motorway"],[15,2,"motorway"],[16,4,"motorway"],
+    [0,1,"primary"],[1,2,"primary"],[2,3,"primary"],[3,4,"primary"],[2,7,"primary"],[7,12,"primary"],
+    [0,5,"residential"],[1,6,"residential"],[3,8,"residential"],[4,9,"residential"],
+    [5,6,"residential"],[6,7,"residential",{oneway:true}],[8,7,"residential",{oneway:true}],[8,9,"residential"],
+    [5,10,"residential"],[10,11,"residential"],[11,12,"residential"],[12,13,"residential"],[9,13,"residential"],[6,11,"residential"],
+    [11,7,"cycleway"],[7,3,"cycleway"],[12,9,"cycleway"],
+    [6,2,"footway"],[8,13,"footway"]
+  ];
+  EDGES.forEach(function (e) {
+    var a = NODES[e[0]], b = NODES[e[1]];
+    e.len = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    e.flags = e[3] || {};
+  });
+  var TYPE_LABEL = { motorway: "Autoroute", primary: "Route principale", residential: "Rue résidentielle", cycleway: "Piste cyclable", footway: "Chemin piéton" };
+  var TYPES = ["motorway","primary","residential","cycleway","footway"];
+
+  var state = { costing: "auto", avoidTolls: false, avoidHw: false, useRoads: 0.5, from: 5, to: 9, pick: "from" };
+
+  // Simplified Sif: returns {speed, factor} or null if forbidden
+  function sif(type, flags) {
+    var c = state.costing;
+    if (c === "auto") {
+      var sp = { motorway: 110, primary: 60, residential: 30 }[type];
+      if (!sp) return null;
+      var f = 1;
+      if (state.avoidTolls && flags.toll) f *= 8;
+      if (state.avoidHw && type === "motorway") f *= 8;
+      return { speed: sp, factor: f };
+    }
+    if (c === "bicycle") {
+      var u = state.useRoads;
+      if (type === "primary") return { speed: 18, factor: 1 + (1 - u) * 3 };
+      if (type === "residential") return { speed: 18, factor: 1 + (1 - u) * 0.6 };
+      if (type === "cycleway") return { speed: 20, factor: 1 };
+      return null;
+    }
+    if (type === "motorway") return null;
+    return { speed: 5.1, factor: 1 };
+  }
+  function respectsOneway() { return state.costing !== "pedestrian"; }
+  function neighbours(n) {
+    var out = [];
+    EDGES.forEach(function (e, i) {
+      var r = sif(e[2], e.flags);
+      if (!r) return;
+      var sec = (e.len * UNIT_KM) / r.speed * 3600;
+      if (e[0] === n) out.push({ to: e[1], edge: i, sec: sec, cost: sec * r.factor });
+      else if (e[1] === n && !(e.flags.oneway && respectsOneway())) out.push({ to: e[0], edge: i, sec: sec, cost: sec * r.factor });
+    });
+    return out;
+  }
+  function accessible(n) { return neighbours(n).length > 0; }
+  function dijkstra(s, t) {
+    var N = NODES.length, dist = [], prev = [], done = [], order = [];
+    for (var i = 0; i < N; i++) { dist[i] = Infinity; prev[i] = null; done[i] = false; }
+    dist[s] = 0;
+    while (true) {
+      var u = -1;
+      for (var j = 0; j < N; j++) if (!done[j] && dist[j] < Infinity && (u < 0 || dist[j] < dist[u])) u = j;
+      if (u < 0) break;
+      done[u] = true; order.push(u);
+      if (u === t) break;
+      neighbours(u).forEach(function (nb) {
+        if (dist[u] + nb.cost < dist[nb.to]) { dist[nb.to] = dist[u] + nb.cost; prev[nb.to] = { node: u, edge: nb.edge, sec: nb.sec }; }
+      });
+    }
+    if (dist[t] === Infinity) return { order: order, path: null };
+    var path = [], cur = t, sec = 0, len = 0;
+    while (prev[cur]) { path.unshift(prev[cur].edge); sec += prev[cur].sec; len += EDGES[prev[cur].edge].len; cur = prev[cur].node; }
+    return { order: order, path: path, sec: sec, km: len * UNIT_KM, cost: dist[t] };
+  }
+
+  function roadStyle(type) {
+    return {
+      motorway: { stroke: "var(--road-motorway)", w: 7 },
+      primary: { stroke: "var(--road-primary)", w: 4.5 },
+      residential: { stroke: "var(--road-res)", w: 3 },
+      cycleway: { stroke: "var(--road-cycle)", w: 3, dash: "7 5" },
+      footway: { stroke: "var(--road-foot)", w: 2.5, dash: "2 5" }
+    }[type];
+  }
+
+  /* ---------- Router demo ---------- */
+  var rsvg = $("r-svg"), gRoads = el("g", {}, rsvg), gRoute = el("g", {}, rsvg), gNodes = el("g", {}, rsvg);
+  var nodeEls = [], timers = [];
+  EDGES.forEach(function (e) {
+    var a = NODES[e[0]], b = NODES[e[1]], st = roadStyle(e[2]);
+    var ln = el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: st.stroke, "stroke-width": st.w, "stroke-linecap": "round" }, gRoads);
+    if (st.dash) ln.setAttribute("stroke-dasharray", st.dash);
+    if (e.flags.oneway) {
+      var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
+      el("path", { d: "M-6,-5 L4,0 L-6,5", fill: "none", stroke: "var(--text)", "stroke-width": 2, transform: "translate(" + mx + "," + (my - 9) + ") rotate(" + ang + ")" }, gRoads);
+    }
+    if (e.flags.toll) {
+      var tx = el("text", { x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2 - 12, "text-anchor": "middle", style: "font:500 11px var(--font-ui);fill:var(--muted)" }, gRoads);
+      tx.textContent = "péage";
+    }
+  });
+  var s2label = el("text", { x: 170, y: 32, "text-anchor": "middle", style: "font:500 11px var(--font-ui);fill:var(--muted)" }, gRoads);
+  s2label.textContent = "autoroute A61";
+  NODES.forEach(function (n, i) {
+    var g = el("g", { "class": "node", tabindex: 0, role: "button", "aria-label": "Carrefour " + n[2] }, gNodes);
+    var r = n[2].length > 1 ? 13 : 11;
+    el("circle", { cx: n[0], cy: n[1], r: r }, g);
+    var t = el("text", { x: n[0], y: n[1] + 4, "text-anchor": "middle" }, g);
+    t.textContent = n[2];
+    g.addEventListener("click", function () { pickNode(i); });
+    g.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pickNode(i); } });
+    nodeEls.push(g);
+  });
+  function pickNode(i) {
+    if (state.pick === "from") { state.from = i; state.pick = "to"; $("r-hint").textContent = "Départ : " + NODES[i][2] + ". Clique maintenant l'arrivée."; }
+    else { if (i === state.from) return; state.to = i; state.pick = "from"; $("r-hint").textContent = "Clique un carrefour pour choisir un nouveau départ."; }
+    run();
+  }
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function run() {
+    clearTimers();
+    while (gRoute.firstChild) gRoute.removeChild(gRoute.firstChild);
+    nodeEls.forEach(function (g, i) {
+      g.classList.remove("settled", "start", "end");
+      g.classList.toggle("dim", !accessible(i));
+    });
+    nodeEls[state.from].classList.add("start");
+    if (state.pick === "to" || state.from === state.to) {
+      $("r-time").textContent = "–"; $("r-dist").textContent = "–"; $("r-exp").textContent = "–";
+      $("r-msg").textContent = ""; $("r-msg").className = "msg";
+      return;
+    }
+    nodeEls[state.to].classList.add("end");
+    var res = dijkstra(state.from, state.to);
+    var step = reduced ? 0 : 45;
+    res.order.forEach(function (n, k) {
+      timers.push(setTimeout(function () { if (n !== state.from && n !== state.to) nodeEls[n].classList.add("settled"); }, k * step));
+    });
+    var after = res.order.length * step;
+    $("r-exp").textContent = res.order.length;
+    if (!res.path) {
+      $("r-time").textContent = "–"; $("r-dist").textContent = "–";
+      $("r-msg").className = "msg err";
+      $("r-msg").textContent = "Aucun itinéraire : ce mode n'a le droit d'emprunter aucune arête pour relier ces deux carrefours. Dans le vrai Valhalla, Loki refuserait même d'y accrocher le point.";
+      return;
+    }
+    timers.push(setTimeout(function () {
+      var pts = [], cur = state.from;
+      pts.push(NODES[cur]);
+      res.path.forEach(function (ei) { var e = EDGES[ei]; cur = (e[0] === cur) ? e[1] : e[0]; pts.push(NODES[cur]); });
+      var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0] + "," + p[1]; }).join(" ");
+      var path = el("path", { d: d, fill: "none", stroke: "var(--route)", "stroke-width": 6, "stroke-linecap": "round", "stroke-linejoin": "round", opacity: 0.95 }, gRoute);
+      if (!reduced) {
+        var L = path.getTotalLength();
+        path.style.strokeDasharray = L; path.style.strokeDashoffset = L;
+        path.getBoundingClientRect();
+        path.style.transition = "stroke-dashoffset .6s ease-out";
+        path.style.strokeDashoffset = 0;
+      }
+      $("r-time").textContent = fmtTime(res.sec);
+      $("r-dist").textContent = fmtKm(res.km);
+      $("r-msg").className = "msg";
+      var names = { auto: "voiture", bicycle: "vélo", pedestrian: "piéton" };
+      $("r-msg").textContent = "Trajet " + names[state.costing] + " de " + NODES[state.from][2] + " à " + NODES[state.to][2] + ". Coût total minimisé : " + Math.round(res.cost) + " (le temps réel est " + Math.round(res.sec) + " s).";
+    }, after));
+  }
+  document.querySelectorAll("#router [data-costing]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      state.costing = b.getAttribute("data-costing");
+      document.querySelectorAll("#router [data-costing]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      $("opt-auto").hidden = state.costing !== "auto";
+      $("opt-bike").hidden = state.costing !== "bicycle";
+      if (state.pick === "to") state.pick = "from";
+      run(); renderCostTable();
+    });
+  });
+  $("o-tolls").addEventListener("change", function () { state.avoidTolls = this.checked; run(); renderCostTable(); });
+  $("o-hw").addEventListener("change", function () { state.avoidHw = this.checked; run(); renderCostTable(); });
+  $("o-roads").addEventListener("input", function () {
+    state.useRoads = parseFloat(this.value);
+    $("o-roads-v").textContent = "use_roads: " + state.useRoads.toFixed(1);
+    run(); renderCostTable();
+  });
+
+  /* ---------- Cost table (chapter 4) ---------- */
+  function renderCostTable() {
+    var names = { auto: "Modèle auto", bicycle: "Modèle bicycle", pedestrian: "Modèle pedestrian" };
+    var extra = "";
+    if (state.costing === "auto") extra = (state.avoidTolls ? " Péages pénalisés." : "") + (state.avoidHw ? " Autoroutes pénalisées." : "");
+    if (state.costing === "bicycle") extra = " use_roads = " + state.useRoads.toFixed(1) + " : plus il est bas, plus les routes partagées avec les voitures coûtent cher.";
+    if (state.costing === "pedestrian") extra = " Les sens uniques ne s'appliquent pas aux piétons.";
+    $("c-hint").textContent = names[state.costing] + "." + extra;
+    var html = "";
+    TYPES.forEach(function (t) {
+      var r = sif(t, {});
+      var pen = "–";
+      if (r) {
+        var f = r.factor;
+        if (state.costing === "auto" && t === "motorway") {
+          var parts = [];
+          if (state.avoidHw) parts.push("× 8 partout");
+          if (state.avoidTolls) parts.push("× 8 sur le tronçon à péage");
+          pen = parts.length ? parts.join(", ") : "aucune";
+        } else pen = f > 1.001 ? "× " + f.toFixed(1).replace(".", ",") : "aucune";
+      }
+      html += "<tr><td>" + TYPE_LABEL[t] + "</td><td class='" + (r ? "yes" : "no") + "'>" + (r ? "oui" : "non") + "</td><td class='num'>" + (r ? String(r.speed).replace(".", ",") + " km/h" : "–") + "</td><td>" + pen + "</td></tr>";
+    });
+    $("c-body").innerHTML = html;
+  }
+
+  /* ---------- OSM vs graph (chapter 2) ---------- */
+  var gsvg = $("g-svg"), view = "osm";
+  function renderGraphView() {
+    while (gsvg.firstChild) gsvg.removeChild(gsvg.firstChild);
+    var shapePts = 0;
+    if (view === "osm") {
+      EDGES.forEach(function (e, i) {
+        var a = NODES[e[0]], b = NODES[e[1]];
+        var st = roadStyle(e[2]);
+        el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: st.stroke, "stroke-width": 2, opacity: 0.8 }, gsvg);
+        var k = Math.max(1, Math.round(e.len / 45));
+        for (var j = 1; j < k; j++) {
+          var t = j / k;
+          el("circle", { cx: a[0] + (b[0] - a[0]) * t, cy: a[1] + (b[1] - a[1]) * t, r: 3, fill: "var(--muted)" }, gsvg);
+          shapePts++;
+        }
+      });
+      NODES.forEach(function (n) { el("circle", { cx: n[0], cy: n[1], r: 3.5, fill: "var(--muted)" }, gsvg); });
+      $("g-msg").textContent = "Vue OSM : " + (shapePts + NODES.length) + " points (nodes) le long de " + EDGES.length + " tronçons de ways. Tous les points se ressemblent : rien ne dit lesquels sont des carrefours.";
+    } else {
+      var defs = el("defs", {}, gsvg);
+      var mk = el("marker", { id: "arr", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: "auto" }, defs);
+      el("path", { d: "M0,0 L10,5 L0,10 z", style: "fill:var(--blue-2)" }, mk);
+      var mk2 = el("marker", { id: "arr2", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: "auto" }, defs);
+      el("path", { d: "M0,0 L10,5 L0,10 z", style: "fill:var(--err)" }, mk2);
+      var directed = 0;
+      EDGES.forEach(function (e) {
+        [[e[0], e[1]], [e[1], e[0]]].forEach(function (dir, d) {
+          var a = NODES[dir[0]], b = NODES[dir[1]];
+          var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), nx = -dy / L * 4, ny = dx / L * 4;
+          var x1 = a[0] + dx * (14 / L) + nx, y1 = a[1] + dy * (14 / L) + ny, x2 = b[0] - dx * (16 / L) + nx, y2 = b[1] - dy * (16 / L) + ny;
+          var forbidden = e.flags.oneway && d === 1;
+          var ln = el("line", { x1: x1, y1: y1, x2: x2, y2: y2, stroke: forbidden ? "var(--err)" : "var(--blue-2)", "stroke-width": 1.6, "marker-end": forbidden ? "url(#arr2)" : "url(#arr)" }, gsvg);
+          if (forbidden) ln.setAttribute("stroke-dasharray", "4 4");
+          directed++;
+        });
+      });
+      NODES.forEach(function (n) {
+        el("circle", { cx: n[0], cy: n[1], r: 9, fill: "var(--bg)", stroke: "var(--accent)", "stroke-width": 2 }, gsvg);
+        var t = el("text", { x: n[0], y: n[1] + 3.5, "text-anchor": "middle", style: "font:600 9px var(--font-ui);fill:var(--text)" }, gsvg);
+        t.textContent = n[2];
+      });
+      $("g-msg").textContent = "Vue graphe : " + NODES.length + " nœuds (les intersections) et " + directed + " arêtes orientées, une par sens. En pointillés rouges, le sens interdit des deux rues à sens unique : l'arête existe, mais les voitures n'y ont pas accès.";
+    }
+  }
+  document.querySelectorAll("[data-view]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      view = b.getAttribute("data-view");
+      document.querySelectorAll("[data-view]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      renderGraphView();
+    });
+  });
+
+  /* ---------- Tile calculator (chapter 3) ---------- */
+  var PLACES = [
+    ["Andorre-la-Vieille", 42.5078, 1.5211], ["Castelnaudary", 43.3183, 1.9536], ["Toulouse", 43.6045, 1.4440],
+    ["Paris", 48.8566, 2.3522], ["Berlin", 52.5200, 13.4050], ["Tokyo", 35.6762, 139.6503]
+  ];
+  var LEVELS = [
+    { l: 0, size: 4, what: "grands axes" }, { l: 1, size: 1, what: "routes secondaires" }, { l: 2, size: 0.25, what: "rues locales" }
+  ];
+  function tileInfo(lat, lon, lv) {
+    var s = lv.size, ncols = Math.round(360 / s), nrows = Math.round(180 / s);
+    var row = Math.min(nrows - 1, Math.floor((lat + 90) / s)), col = Math.min(ncols - 1, Math.floor((lon + 180) / s));
+    var id = row * ncols + col, max = ncols * nrows - 1;
+    var digits = Math.ceil(String(max).length / 3) * 3;
+    var parts = String(id).padStart(digits, "0").match(/.{3}/g);
+    return { row: row, col: col, id: id, ncols: ncols, path: lv.l + "/" + parts.join("/") + ".gph" };
+  }
+  var placeBtns = $("t-places");
+  PLACES.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = p[0]; b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+    b.addEventListener("click", function () {
+      placeBtns.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      $("t-lat").value = p[1]; $("t-lon").value = p[2]; renderTiles(p[1], p[2]);
+    });
+    placeBtns.appendChild(b);
+  });
+  $("t-go").addEventListener("click", function () {
+    var lat = parseFloat(String($("t-lat").value).replace(",", ".")), lon = parseFloat(String($("t-lon").value).replace(",", "."));
+    if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+      $("t-rows").innerHTML = "<p class='msg err'>Coordonnées invalides : la latitude va de -90 à 90, la longitude de -180 à 180.</p>";
+      return;
+    }
+    placeBtns.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+    renderTiles(lat, lon);
+  });
+  function renderTiles(lat, lon) {
+    var html = "";
+    LEVELS.forEach(function (lv) {
+      var t = tileInfo(lat, lon, lv);
+      html += "<div class='tile-row'><span class='lvl'>Niveau " + lv.l + "</span><span class='path'>" + t.path + "</span>" +
+        "<span></span><span class='muted' style='font-size:.82rem'>" + lv.what + ", ligne " + t.row + " × " + t.ncols + " colonnes + colonne " + t.col + " = " + t.id + "</span></div>";
+    });
+    $("t-rows").innerHTML = html;
+    // Drawing: level-0 tile split in 1° cells, then the 1° tile split in 0.25° cells
+    var svg = $("t-svg");
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var S = 150, ox1 = 5, ox2 = 185, oy = 10;
+    var lat0 = Math.floor((lat + 90) / 4) * 4 - 90, lon0 = Math.floor((lon + 180) / 4) * 4 - 180;
+    var lat1 = Math.floor(lat + 90) - 90, lon1 = Math.floor(lon + 180) - 180;
+    function panel(ox, baseLat, baseLon, size, subs) {
+      var cell = S / subs;
+      for (var r = 0; r < subs; r++) for (var c = 0; c < subs; c++) {
+        el("rect", { x: ox + c * cell, y: oy + (subs - 1 - r) * cell, width: cell, height: cell, fill: "none", stroke: "var(--line-strong)", "stroke-width": 1 }, svg);
+      }
+      var cr = Math.min(subs - 1, Math.floor((lat - baseLat) / (size / subs))), cc = Math.min(subs - 1, Math.floor((lon - baseLon) / (size / subs)));
+      el("rect", { x: ox + cc * cell, y: oy + (subs - 1 - cr) * cell, width: cell, height: cell, fill: "var(--accent-soft)", stroke: "var(--accent)", "stroke-width": 2 }, svg);
+      el("rect", { x: ox, y: oy, width: S, height: S, fill: "none", stroke: "var(--blue-2)", "stroke-width": 2 }, svg);
+      var px = ox + (lon - baseLon) / size * S, py = oy + S - (lat - baseLat) / size * S;
+      el("circle", { cx: px, cy: py, r: 4, fill: "var(--route)", stroke: "var(--bg)", "stroke-width": 1.5 }, svg);
+      return { cx: ox + cc * cell, cy: oy + (subs - 1 - cr) * cell, cell: cell };
+    }
+    var h = panel(ox1, lat0, lon0, 4, 4);
+    panel(ox2, lat1, lon1, 1, 4);
+    el("path", { d: "M" + (h.cx + h.cell) + "," + h.cy + " L" + ox2 + "," + oy, stroke: "var(--accent)", "stroke-width": 1, "stroke-dasharray": "3 3", fill: "none" }, svg);
+    el("path", { d: "M" + (h.cx + h.cell) + "," + (h.cy + h.cell) + " L" + ox2 + "," + (oy + S), stroke: "var(--accent)", "stroke-width": 1, "stroke-dasharray": "3 3", fill: "none" }, svg);
+    var t1 = el("text", { x: ox1 + S / 2, y: 180, "text-anchor": "middle", style: "font:500 11px var(--font-ui);fill:var(--muted)" }, svg);
+    t1.textContent = "niveau 0 (4°)";
+    var t2 = el("text", { x: ox2 + S / 2, y: 180, "text-anchor": "middle", style: "font:500 11px var(--font-ui);fill:var(--muted)" }, svg);
+    t2.textContent = "niveau 1 (1°), zoomé";
+  }
+
+  /* ---------- Pipeline (chapter 5) ---------- */
+  var PIPE = [
+    { n: "Tyr", r: "l'accueil", t: "Tyr reçoit la requête HTTP", d: "Il lit le JSON, vérifie qu'il est valide et qu'il respecte les limites du service (distance maximale, nombre de points). Une requête hors limites s'arrête ici avec une erreur claire.", c: "POST /route\n{\"locations\":[{\"lat\":42.5465,\"lon\":1.5911},{\"lat\":42.5077,\"lon\":1.5427}],\n \"costing\":\"auto\"}" },
+    { n: "Loki", r: "l'accroche", t: "Loki accroche chaque point au graphe", d: "Un point GPS tombe rarement pile sur une route. Loki cherche les arêtes les plus proches que ce mode a le droit d'emprunter, et note à quel pourcentage de l'arête se trouve le point. Un piéton ne sera jamais accroché à une autoroute.", c: "point 1 → arête 2/763926/1043, à 37 % de sa longueur\npoint 2 → arête 2/763926/588, à 81 %   (exemple)" },
+    { n: "Thor", r: "le calcul", t: "Thor cherche le chemin le moins coûteux", d: "Le plus souvent avec un A* bidirectionnel : une recherche part du départ, une autre de l'arrivée, et elles se rejoignent. En s'éloignant des extrémités, la recherche monte dans la hiérarchie des tuiles pour ne parcourir que les grands axes.", c: "exploration : 1 842 arêtes évaluées\nrencontre des deux recherches → suite de 64 arêtes   (exemple)" },
+    { n: "Sif", r: "le costing", t: "Sif répond à Thor, arête par arête", d: "Pour chaque arête envisagée, Thor demande à Sif : ce mode peut-il passer ? Combien ça coûte ? Sif applique le modèle demandé (auto, bicycle…) et les options de la requête. C'est l'étape que tu as manipulée dans la démo.", c: "Sif(auto) : rue résidentielle, 180 m, 30 km/h\n→ autorisée, temps 21,6 s, coût 21,6   (exemple)" },
+    { n: "Odin", r: "le récit", t: "Odin transforme les arêtes en instructions", d: "Une suite d'arêtes n'est pas lisible. Odin regroupe les arêtes en manœuvres (tourner, continuer, rond-point) et rédige les instructions dans la langue demandée avec le paramètre language.", c: "\"Tournez à droite sur Avinguda Meritxell.\"\n\"Continuez pendant 1,2 km.\"   (exemple)" },
+    { n: "Tyr", r: "la réponse", t: "Tyr renvoie la réponse", d: "Il assemble le résumé (temps, distance), les manœuvres et le tracé encodé, puis répond en JSON. C'est la réponse que tu as reçue avec curl.", c: "{\"trip\":{\"summary\":{\"time\":523.842,\"length\":6.73,…},\n         \"legs\":[{\"maneuvers\":[…],\"shape\":\"…\"}]}}" }
+  ];
+  var pipeIdx = 0, pipeEl = $("pipe");
+  PIPE.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "god"; b.setAttribute("role", "tab");
+    b.innerHTML = "<b>" + p.n + "</b><span>" + p.r + "</span>";
+    b.addEventListener("click", function () { pipeIdx = i; renderPipe(); });
+    pipeEl.appendChild(b);
+  });
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function renderPipe() {
+    Array.prototype.forEach.call(pipeEl.children, function (b, i) {
+      b.classList.toggle("on", i === pipeIdx); b.classList.toggle("done", i < pipeIdx);
+      b.setAttribute("aria-selected", String(i === pipeIdx));
+    });
+    var p = PIPE[pipeIdx];
+    $("pipe-detail").innerHTML = "<h4>" + (pipeIdx + 1) + ". " + p.t + "</h4><p>" + p.d + "</p><div class='code'><pre>" + esc(p.c) + "</pre></div>";
+    $("pipe-prev").disabled = pipeIdx === 0;
+    $("pipe-next").disabled = pipeIdx === PIPE.length - 1;
+  }
+  $("pipe-prev").addEventListener("click", function () { if (pipeIdx > 0) { pipeIdx--; renderPipe(); } });
+  $("pipe-next").addEventListener("click", function () { if (pipeIdx < PIPE.length - 1) { pipeIdx++; renderPipe(); } });
+
+  /* ---------- Request builder (chapter 6) ---------- */
+  function renderBuilder() {
+    var c = $("b-costing").value, host = $("b-host").value.trim() || "localhost:8002";
+    var car = c === "auto" || c === "truck";
+    $("b-tolls-l").hidden = !car; $("b-hw-l").hidden = !car; $("b-h-l").hidden = c !== "truck";
+    var body = { locations: [{ lat: 42.546504, lon: 1.591129 }, { lat: 42.507667, lon: 1.542721 }], costing: c };
+    var co = {};
+    if (car && $("b-tolls").checked) co.use_tolls = 0;
+    if (car && $("b-hw").checked) co.use_highways = 0;
+    if (c === "truck" && $("b-h").checked) co.height = 4.2;
+    if (Object.keys(co).length) { body.costing_options = {}; body.costing_options[c] = co; }
+    if ($("b-none").checked) body.directions_type = "none";
+    else if ($("b-fr").checked) body.language = "fr-FR";
+    var json = JSON.stringify(body, null, 2).replace(/\{\n\s+"lat": ([\d.]+),\n\s+"lon": ([\d.]+)\n\s+\}/g, '{"lat": $1, "lon": $2}');
+    var cmd = "curl -s http://" + host + "/route \\\n  -H 'Content-Type: application/json' \\\n  --data '" + json.replace(/\n/g, "\n  ") + "' \\\n  | jq '.trip.summary'";
+    $("b-curl").textContent = cmd;
+  }
+  ["b-costing","b-host","b-tolls","b-hw","b-h","b-fr","b-none"].forEach(function (id) {
+    $(id).addEventListener("input", renderBuilder); $(id).addEventListener("change", renderBuilder);
+  });
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var txt = $(b.getAttribute("data-copy")).textContent;
+      var done = function () { b.textContent = "Copié"; setTimeout(function () { b.textContent = "Copier"; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt); done(); });
+      else { fallbackCopy(txt); done(); }
+    });
+  });
+  function fallbackCopy(txt) {
+    var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta);
+  }
+
+  /* ---------- Response explainer ---------- */
+  var RESP = [
+    ["has_time_restrictions", "false", "Le trajet emprunte-t-il une route soumise à des horaires (fermée la nuit, réservée certains jours) ? Ici non."],
+    ["has_toll", "false", "Le trajet passe-t-il par un péage ? Utile pour prévenir l'utilisateur sans lire toutes les manœuvres."],
+    ["has_highway", "false", "Le trajet emprunte-t-il une autoroute ? Normal en Andorre : il n'y en a pas."],
+    ["has_ferry", "false", "Le trajet inclut-il un ferry ? Pour une couverture mondiale, ce champ deviendra intéressant."],
+    ["min_lat", "42.508082", "Avec les trois champs suivants, c'est le rectangle qui englobe tout le tracé. L'application s'en sert pour cadrer la carte sur l'itinéraire."],
+    ["min_lon", "1.542601", "Longitude ouest du rectangle englobant."],
+    ["max_lat", "42.546412", "Latitude nord du rectangle englobant."],
+    ["max_lon", "1.592306", "Longitude est du rectangle englobant."],
+    ["time", "523.842", "La durée estimée, en secondes : 523,8 s, soit 8 min 44 s. C'est le chiffre à afficher à l'utilisateur."],
+    ["length", "6.73", "La distance en kilomètres (l'unité par défaut ; on peut demander des miles avec units)."],
+    ["cost", "517.425", "La valeur que Thor a minimisée. Elle ressemble à une durée mais intègre les pénalités et préférences du costing. Elle sert à comparer des chemins entre eux, jamais à informer l'utilisateur."]
+  ];
+  (function () {
+    var box = $("resp"), html = "{\n";
+    RESP.forEach(function (r, i) {
+      html += "  <button type='button' data-i='" + i + "'>\"" + r[0] + "\"</button>: " + r[1] + (i < RESP.length - 1 ? "," : "") + "\n";
+    });
+    box.innerHTML = html + "}";
+    box.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        box.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        var r = RESP[+b.getAttribute("data-i")];
+        $("resp-explain").innerHTML = "<b>" + r[0] + "</b> : " + r[2];
+      });
+    });
+  })();
+
+  /* ---------- Build stages (chapter 7) ---------- */
+  var STAGES = [
+    ["initialize", "Prépare la configuration et les répertoires de travail.", false],
+    ["parseways", "Lit toutes les voies OSM routables et leurs tags. La mémoire commence à grimper ici : il faut tout garder pour la suite.", false],
+    ["parserelations", "Lit les relations : interdictions de tourner, itinéraires balisés.", false],
+    ["parsenodes", "Lit les points et repère ceux qui sont partagés par plusieurs voies : ce seront les intersections.", false],
+    ["construct_edges", "Découpe chaque voie en arêtes, d'une intersection à la suivante.", false],
+    ["build", "Écrit une première version des tuiles, au niveau local.", false],
+    ["enhance", "Enrichit chaque arête : pays et règles de circulation via la base admin, fuseau horaire, vitesses par défaut, densité urbaine. Une des étapes les plus gourmandes.", false],
+    ["filter", "Retire les éléments que la configuration exclut du graphe.", false],
+    ["transit", "Intègre les transports en commun si des flux GTFS sont fournis. Sans GTFS, l'étape ne fait rien.", false],
+    ["bss", "Ajoute les stations de vélos en libre-service, si présentes.", false],
+    ["hierarchy", "Répartit les arêtes sur les niveaux 0, 1 et 2, et crée les passages d'un niveau à l'autre.", false],
+    ["shortcuts", "Crée des raccourcis sur les grands axes pour accélérer les longs trajets.", false],
+    ["restrictions", "Construit les restrictions complexes, qui portent sur plusieurs arêtes. Dans tes logs : « Reverse restrictions added: 1 ».", true],
+    ["validate", "Vérifie la cohérence et relie les arêtes qui traversent la frontière entre deux tuiles. Dans tes logs : « Binning inter-tile edges ».", true],
+    ["cleanup", "Supprime les fichiers temporaires *.bin. Dans tes logs : « Cleaning up temporary *.bin files ». L'image scriptée crée ensuite le tar.", true]
+  ];
+  var stEl = $("stages");
+  STAGES.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = s[0]; if (s[2]) b.classList.add("seen");
+    b.addEventListener("click", function () { renderStage(i); });
+    stEl.appendChild(b);
+  });
+  function renderStage(i) {
+    Array.prototype.forEach.call(stEl.children, function (b, j) { b.classList.toggle("on", i === j); });
+    var s = STAGES[i];
+    $("stage-detail").innerHTML = "<p style='margin:0 0 6px'><strong>" + (i + 1) + "/" + STAGES.length + " " + s[0] + "</strong></p><p style='margin:0'>" + s[1] + "</p>";
+  }
+
+  /* ---------- Quiz (chapter 9) ---------- */
+  var QUIZ = [
+    { q: "Pourquoi Valhalla sépare-t-il le build et le service ?", a: ["Pour pouvoir utiliser deux langages différents", "Parce que construire le graphe est long et gourmand alors que répondre aux requêtes est léger", "Parce que Kubernetes l'impose"], ok: 1, e: "Le build lit toute la zone d'un coup ; le service ne lit que les tuiles utiles. On les sépare pour ne payer le coût lourd qu'une fois." },
+    { q: "Une application veut éviter les péages pour un seul trajet. Que faut-il faire ?", a: ["Reconstruire les tuiles sans les routes à péage", "Ajouter use_tolls: 0 dans costing_options de la requête", "Créer un second déploiement Valhalla"], ok: 1, e: "Le costing est dynamique : les préférences arrivent avec la requête, le graphe ne change pas." },
+    { q: "Une rue résidentielle de Castelnaudary se trouve dans…", a: ["une tuile de niveau 0, de 4°", "une tuile de niveau 1, de 1°", "une tuile de niveau 2, de 0,25°"], ok: 2, e: "Le niveau 2 contient le réseau local, découpé en tuiles de 0,25°." },
+    { q: "Quel module accroche un point GPS à la route la plus proche ?", a: ["Loki", "Odin", "Mjolnir"], ok: 0, e: "Loki fait l'accroche. Odin rédige les instructions, Mjolnir construit les tuiles." },
+    { q: "La réponse contient time: 523.8 et cost: 517.4. Que montrer à l'utilisateur ?", a: ["cost", "time", "La moyenne des deux"], ok: 1, e: "time est une durée en secondes. cost est la valeur interne minimisée par l'algorithme." },
+    { q: "Pour couvrir la planète, qu'est-ce qui coûtera le plus cher ?", a: ["Le service, qui doit charger toute la planète en RAM", "Le build des tuiles : RAM, temps et disque", "Les appels HTTP des applications"], ok: 1, e: "Le service projette le tar en mémoire et ne lit que ce qu'il utilise. C'est le build qui demande des dizaines de Go de RAM et des heures de calcul." }
+  ];
+  var answered = 0, good = 0, qbox = $("quiz-box");
+  QUIZ.forEach(function (item, qi) {
+    var d = document.createElement("div"); d.className = "q";
+    d.innerHTML = "<p class='qt'>" + (qi + 1) + ". " + item.q + "</p><div class='choices'></div><p class='fb' aria-live='polite'></p>";
+    var ch = d.querySelector(".choices");
+    item.a.forEach(function (txt, ai) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = txt;
+      b.addEventListener("click", function () {
+        var btns = ch.querySelectorAll("button");
+        btns.forEach(function (x) { x.disabled = true; });
+        btns[item.ok].classList.add("right");
+        if (ai !== item.ok) b.classList.add("wrong"); else good++;
+        answered++;
+        d.querySelector(".fb").innerHTML = "<b>" + (ai === item.ok ? "Exact." : "Pas tout à fait.") + "</b> " + item.e;
+        if (answered === QUIZ.length) $("quiz-score").textContent = "Score : " + good + " sur " + QUIZ.length + (good === QUIZ.length ? ". Prêt pour Robin." : ". Relis les chapitres concernés, puis recharge la page pour réessayer.");
+      });
+      ch.appendChild(b);
+    });
+    qbox.appendChild(d);
+  });
+
+  /* ---------- Init ---------- */
+  state.pick = "from";
+  // start with preset route F -> J
+  state.from = 5; state.to = 9; state.pick = "from";
+  run(); renderCostTable(); renderGraphView();
+  $("t-lat").value = PLACES[0][1]; $("t-lon").value = PLACES[0][2]; renderTiles(PLACES[0][1], PLACES[0][2]);
+  renderPipe(); renderBuilder(); renderStage(12); onScroll();
+})();
+</script>
+</body>
+</html>

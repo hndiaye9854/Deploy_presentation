@@ -1,0 +1,66 @@
+# .github/workflow/deploy.yaml
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build et déploiement
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image Docker
+        run: |
+          docker build -t valhalla:latest .
+          docker save valhalla:latest | gzip > image.tar.gz
+          echo "→ Image buildée et compressée."
+
+      - name: Transfert de l'image vers le VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: image.tar.gz
+          target: /tmp/
+
+      - name: Déploiement sur le VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            docker load < /tmp/image.tar.gz
+
+            docker stop valhalla 2>/dev/null || true
+            docker rm   valhalla 2>/dev/null || true
+
+            docker run -d \
+              --name valhalla \
+              --restart unless-stopped \
+              -p 127.0.0.1:8182:80 \
+              valhalla:latest
+
+            rm -f /tmp/image.tar.gz
+            docker image prune -f
+
+            # Vérification réelle
+            sleep 2
+            if docker ps --filter "name=valhalla" \
+               --filter "status=running" | grep -q valhalla; then
+              echo "✓ valhalla déployé sur le port 8182."
+            else
+              echo "ERREUR : le container n'est pas démarré."
+              docker logs valhalla
+              exit 1
+            fi
