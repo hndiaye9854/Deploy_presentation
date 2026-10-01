@@ -18,8 +18,8 @@ jobs:
 
       - name: Build image Docker
         run: |
-          docker build -t valhalla:latest .
-          docker save valhalla:latest | gzip > image.tar.gz
+          docker build -t osrm:latest .
+          docker save osrm:latest | gzip > image.tar.gz
           echo "→ Image buildée et compressée."
 
       - name: Transfert de l'image vers le VPS
@@ -42,25 +42,25 @@ jobs:
           script: |
             docker load < /tmp/image.tar.gz
 
-            docker stop valhalla 2>/dev/null || true
-            docker rm   valhalla 2>/dev/null || true
+            docker stop osrm 2>/dev/null || true
+            docker rm   osrm 2>/dev/null || true
 
             docker run -d \
-              --name valhalla \
+              --name osrm \
               --restart unless-stopped \
-              -p 127.0.0.1:8183:80 \
-              valhalla:latest
+              -p 127.0.0.1:8184:80 \
+              osrm:latest
 
             rm -f /tmp/image.tar.gz
             docker image prune -f
 
             # Vérification réelle
             sleep 2
-            if docker ps --filter "name=valhalla" \
-               --filter "status=running" | grep -q valhalla; then
-              echo "✓ valhalla déployé sur le port 8183."
+            if docker ps --filter "name=osrm" \
+               --filter "status=running" | grep -q osrm; then
+              echo "✓ osrm déployé sur le port 8184."
             else
               echo "ERREUR : le container n'est pas démarré."
-              docker logs valhalla
+              docker logs osrm
               exit 1
             fi

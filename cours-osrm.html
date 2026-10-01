@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comprendre OSRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens: Kalisio 2026 charter ---------- */
+:root {
+  --logo-img: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiAAAADMCAYAAABKkBjMAAAQAElEQVR4AeydX3bbxpb194Gyen1vzYwg8giukQm0ZSnpdZ+uNQJLI7A8AskjkDwCKSOw8tRr3USiM4HAdwTSHYHV7qfYJs53TlGyKIokCiQAAuQuCyYJFOrPrwpVG6cKhQR0JEACJEACJEACJNAwAQqQhoEzOhIgARIgARIAyIAChHWABEiABEiABEigcQIUII0jZ4QkQAIkQAIkQAIUIKwDJEACJEACJEACjROgAGkcOSMkARIgARIgARKgAGEdIAESIAESIAESaJwABUjjyBkhCZAACZAACZAABQjrAAmQAAmQAAmQQOMEKEAaR84ISYAESIAESIAEKEBYB0iABEiABEiABBonQAHSOHJGSAIkQAIkQAIkQAHCOkACJEACJEACJNA4AQqQxpEzQhIgARIgARIgAQoQ1gESIAESIAESIIHGCTQuQBrPISMkARIgARIgARJoHQEKkNYVCRNEAiRAAiRAApUTaF2AFCCtKxImiARIgARIgARWnwAFyOqXMXNIAiRAAiRAAq0jQAHSuiJhgkiABEiABEhg9QlQgLSsjLOLwUF2mX+07cq+n2Z93WxZEpkcEiCB7hFgikmgdQQoQNpWJCIvoejZtgnIHnLNTIgcgI4ESIAESIAEVogABUjbClPleixJPUCOKUJARwLzE+CZJEACrSNAAdK2IhngzeQkySGHYyaT4V4SIAESIIHuEaAAiSgz6/ifZhf6LrvMfTik1nkZ6c/ywYZdXk9IVg85Xk3Yz10kUESAx0mABEigdQQoQAqKxMTHJlT7gL6A4il8Xob9zv6p9h21uPSnjRMMZN8CHx+OsV38IwESIAESIIHuE6AAKSrDHC/hk0JH/Sk28Z2+Q43OLCFn+CxbQYiongFygs94C7ryBHgGCZAACZBA6whQgMxbJCZCst/02bynx5yX/l2uXYikOxv76ba89t8x59EPCZAACZAACbSdAAVIUQnl+GOqF8EPU4+15wBTQgIkQAIkQAKtI0ABUlAk6U/yHoIPmOS+YLo4meSf+0iABEiABEiABAKB1RcgIZsL/veX7AJyjgdOjjgk8gAIf5AACZAACZBANAEKkAhULjTSbRMhA0lV5Bk+yff2e8p6HREB0gsJkAAJkAAJrDiBouxRgBQRGjme/iwf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);
+  --blue: #13183E; --violet: #6E5AA6; --offwhite: #ECEFF1;
+  --bg: #13183E; --panel: #192055; --panel-2: #001C3A;
+  --code-bg: #0F0D13; --code-text: #ECEFF1;
+  --line: rgba(138,173,226,.22); --line-strong: rgba(138,173,226,.45);
+  --text: #ECEFF1; --muted: #BDBDBD;
+  --accent: #CFBDFE; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+  --accent-soft: rgba(207,189,254,.14);
+  --blue-2: #8AADE2;
+  --ok: #4CAF50; --err: #FFB4AB; --warn: #FBE287;
+  --logo: #CFBDFE;
+  --road-motorway: #8AADE2; --road-primary: #BDBDBD; --road-res: #7A757F;
+  --road-cycle: #4CAF50; --road-foot: #FBE287;
+  --route: #CFBDFE; --explored: rgba(207,189,254,.28);
+  --font: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-ui: "Roboto", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ECEFF1; --panel: #FFFFFF; --panel-2: #E8DDFF;
+    --code-bg: #13183E; --code-text: #ECEFF1;
+    --line: rgba(33,72,118,.16); --line-strong: rgba(33,72,118,.35);
+    --text: #13183E; --muted: #36343A;
+    --accent: #6E5AA6; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+    --accent-soft: rgba(110,90,166,.10);
+    --blue-2: #214876;
+    --ok: #107C10; --err: #BA1A1A; --warn: #534600;
+    --logo: #6E5AA6;
+    --road-motorway: #214876; --road-primary: #7A757F; --road-res: #BDBDBD;
+    --road-cycle: #107C10; --road-foot: #B08A00;
+    --route: #6E5AA6; --explored: rgba(110,90,166,.22);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #ECEFF1; --panel: #FFFFFF; --panel-2: #E8DDFF;
+  --code-bg: #13183E; --code-text: #ECEFF1;
+  --line: rgba(33,72,118,.16); --line-strong: rgba(33,72,118,.35);
+  --text: #13183E; --muted: #36343A;
+  --accent: #6E5AA6; --accent-strong: #6E5AA6; --on-accent: #FFFFFF;
+  --accent-soft: rgba(110,90,166,.10);
+  --blue-2: #214876;
+  --ok: #107C10; --err: #BA1A1A; --warn: #534600;
+  --logo: #6E5AA6;
+  --road-motorway: #214876; --road-primary: #7A757F; --road-res: #BDBDBD;
+  --road-cycle: #107C10; --road-foot: #B08A00;
+  --route: #6E5AA6; --explored: rgba(110,90,166,.22);
+  color-scheme: light;
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* ---------- Base ---------- */
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 24px); scroll-behavior: smooth; background: var(--bg); }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+img, svg { max-width: 100%; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--font); line-height: 1.15; margin: 0; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.3rem); font-weight: 700; letter-spacing: -.015em; }
+h3 { font-size: 1.2rem; font-weight: 700; margin: 2em 0 .6em; }
+strong { font-weight: 700; }
+code { font-family: var(--font-mono); font-size: .88em; background: var(--accent-soft); padding: .1em .35em; border-radius: 5px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- Layout ---------- */
+.shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1240px; margin: 0 auto; gap: 56px; padding: 0 32px; }
+.toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; height: 100vh; max-height: 100%; padding: 32px 0; display: flex; flex-direction: column; gap: 28px; }
+.logo { display: block; width: 128px; height: 48px; background: var(--logo); -webkit-mask: var(--logo-img) left center / contain no-repeat; mask: var(--logo-img) left center / contain no-repeat; }
+.toc nav ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.toc nav li { counter-increment: toc; }
+.toc nav a { display: grid; grid-template-columns: 28px 1fr; padding: 7px 10px; margin-left: -10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: .92rem; line-height: 1.35; }
+.toc nav a::before { content: counter(toc); font-weight: 700; color: var(--blue-2); }
+.toc nav a:hover { color: var(--text); background: var(--accent-soft); }
+.toc nav a.active { color: var(--text); background: var(--accent-soft); font-weight: 600; }
+.toc nav a.active::before { color: var(--accent); }
+.toc-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; font-size: .82rem; color: var(--muted); }
+.progress { height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.progress span { display: block; height: 100%; width: 0; background: var(--accent-strong); }
+main { min-width: 0; padding: 32px 0 80px; }
+.content { max-width: 720px; }
+.wide { max-width: 980px; }
+section.chap { padding-top: 72px; }
+.chap-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 22px; }
+.chap-num { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 300; color: var(--blue-2); line-height: 1; font-variant-numeric: tabular-nums; }
+.lead { font-size: 1.12rem; color: var(--text); }
+.muted { color: var(--muted); }
+.mobile-bar { display: none; }
+
+@media (max-width: 980px) {
+  .shell { grid-template-columns: 1fr; padding: 0 20px; gap: 0; }
+  .toc { display: none; }
+  .mobile-bar { display: flex; position: sticky; top: 0; z-index: 10; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px; padding-top: calc(10px + env(safe-area-inset-top, 0px)); margin-top: calc(-1 * env(safe-area-inset-top, 0px)); background: var(--bg); border-bottom: 1px solid var(--line); }
+  .mobile-bar .logo { width: 96px; height: 36px; }
+  .mobile-bar .progress { position: absolute; left: 0; right: 0; bottom: -1px; border-radius: 0; height: 3px; background: transparent; }
+  section.chap { padding-top: 56px; }
+}
+
+/* ---------- Hero ---------- */
+.hero { padding-top: 24px; }
+.hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); font-weight: 800; letter-spacing: -.03em; max-width: 15ch; }
+.hero .intro { max-width: 60ch; margin: 20px 0 0; font-size: 1.12rem; color: var(--muted); }
+.hero .by { font-size: .88rem; color: var(--muted); margin-top: 14px; }
+
+/* ---------- Panels & widgets ---------- */
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin: 24px 0; }
+.widget { font-family: var(--font-ui); }
+.widget-title { font-family: var(--font); font-weight: 700; font-size: 1.02rem; margin: 0 0 4px; }
+.widget-hint { font-size: .9rem; color: var(--muted); margin: 0 0 14px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; }
+.seg button { font: 500 .92rem var(--font-ui); color: var(--muted); background: none; border: 0; padding: 8px 14px; border-radius: 9px; cursor: pointer; }
+.seg button:hover { color: var(--text); }
+.seg button[aria-pressed="true"] { background: var(--accent-strong); color: var(--on-accent); }
+.btn { font: 500 .92rem var(--font-ui); background: var(--accent-strong); color: var(--on-accent); border: 0; padding: 9px 16px; border-radius: 10px; cursor: pointer; }
+.btn:hover { filter: brightness(1.1); }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+.btn:disabled { opacity: .4; cursor: default; filter: none; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin-top: 14px; font-size: .92rem; }
+.opts label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.opts input[type=checkbox], .opts input[type=range] { accent-color: var(--accent-strong); }
+.opts input[type=range] { width: 140px; }
+.opts[hidden], .opts label[hidden] { display: none; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 16px; }
+.stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.stat b { display: block; font: 700 1.35rem var(--font); font-variant-numeric: tabular-nums; }
+.stat span { font-size: .8rem; color: var(--muted); }
+.msg { font-size: .9rem; margin-top: 12px; min-height: 1.4em; color: var(--muted); }
+.msg.err { color: var(--err); }
+
+/* Hero map */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 36px; }
+.map-wrap { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.map-wrap svg { display: block; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .8rem; color: var(--muted); margin-top: 10px; }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 6px; }
+svg .node { cursor: pointer; }
+svg .node circle { fill: var(--bg); stroke: var(--muted); stroke-width: 2; transition: r .15s; }
+svg .node:focus { outline: none; }
+svg .node:hover circle, svg .node:focus-visible circle { stroke: var(--accent); stroke-width: 3; }
+svg .node text { font: 600 12px var(--font-ui); fill: var(--text); pointer-events: none; }
+svg .node.settled circle { fill: var(--explored); }
+svg .node.start circle { fill: var(--accent-strong); stroke: var(--accent); }
+svg .node.end circle { fill: var(--bg); stroke: var(--accent); stroke-width: 4; }
+svg .node.start text { fill: #FFFFFF; }
+svg .node.dim { opacity: .35; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; font-family: var(--font-ui); }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.yes { color: var(--ok); font-weight: 500; }
+.no { color: var(--err); font-weight: 500; }
+.tag { display: inline-block; font-size: .78rem; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.tag.est { background: transparent; border: 1px dashed var(--line-strong); color: var(--muted); }
+
+/* Code */
+.code { position: relative; margin: 16px 0; }
+.code pre { margin: 0; background: var(--code-bg); color: var(--code-text); font: 400 13.5px/1.6 var(--font-mono); padding: 16px 18px; border-radius: 12px; overflow-x: auto; white-space: pre; }
+.code .copy { position: absolute; top: 8px; right: 8px; font: 500 .78rem var(--font-ui); background: rgba(236,239,241,.1); color: #ECEFF1; border: 1px solid rgba(236,239,241,.25); padding: 4px 10px; border-radius: 8px; cursor: pointer; }
+.code .copy:hover { background: rgba(236,239,241,.2); }
+.c-cm { color: #8AADE2; }
+
+/* Two-phase figure */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; margin: 26px 0; font-family: var(--font-ui); }
+.flow .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; font-size: .88rem; }
+.flow .box b { display: block; font: 700 .98rem var(--font); margin-bottom: 2px; }
+.flow .arrow { text-align: center; font-size: .78rem; color: var(--muted); line-height: 1.3; }
+.flow .arrow::after { content: ""; display: block; margin: 4px auto 0; width: 28px; height: 2px; background: var(--line-strong); }
+.flow .box.heavy { border-color: var(--line-strong); }
+.flow .box.key { background: var(--accent-soft); border-color: var(--accent); }
+@media (max-width: 720px) {
+  .flow { grid-template-columns: 1fr; }
+  .flow .arrow::after { width: 2px; height: 18px; }
+}
+.callout { border-radius: 12px; padding: 14px 18px; background: var(--accent-soft); margin: 20px 0; }
+.callout p:last-child { margin: 0; }
+.twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .twocol { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } }
+
+/* Tile calculator */
+.tiles-out { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px; align-items: start; margin-top: 16px; }
+@media (max-width: 720px) { .tiles-out { grid-template-columns: 1fr; } }
+.tile-row { display: grid; grid-template-columns: 74px 1fr; gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+.tile-row:last-child { border-bottom: 0; }
+.tile-row .lvl { font-weight: 700; color: var(--accent); }
+.tile-row .path { font-family: var(--font-mono); font-size: .9rem; }
+.coord-in { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; font-size: .9rem; }
+.coord-in input { font: 400 .92rem var(--font-mono); width: 110px; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); }
+.bits { display: flex; height: 44px; border-radius: 10px; overflow: hidden; font: 500 .8rem var(--font-ui); margin: 10px 0 6px; }
+.bits div { display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 6px; }
+.bits .b-l { flex: 3 0 64px; background: var(--accent-strong); color: #FFFFFF; }
+.bits .b-t { flex: 22; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+.bits .b-i { flex: 21; background: var(--bg); color: var(--text); border: 1px solid var(--line); }
+
+/* Pipeline */
+.pipe { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.pipe .god { flex: 1 0 104px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 10px; text-align: center; background: var(--bg); cursor: pointer; font-family: var(--font-ui); color: var(--text); }
+.pipe .god b { display: block; font: 700 1rem var(--font); }
+.pipe .god span { font-size: .78rem; color: var(--muted); }
+.pipe .god.on { border-color: var(--accent); background: var(--accent-soft); }
+.pipe .god.done { border-color: var(--line-strong); }
+.pipe-detail { margin-top: 16px; min-height: 150px; }
+.pipe-detail h4 { margin: 0 0 6px; font: 700 1.05rem var(--font); }
+.pipe-nav { display: flex; gap: 8px; margin-top: 14px; }
+
+/* Request builder */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 18px; font-size: .92rem; }
+.form-grid label.f { display: flex; flex-direction: column; gap: 6px; color: var(--muted); }
+select, .form-grid input[type=text] { font: 400 .92rem var(--font-ui); padding: 8px 10px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); }
+
+/* JSON explainer */
+.json { font: 400 13.5px/1.75 var(--font-mono); background: var(--code-bg); color: var(--code-text); border-radius: 12px; padding: 16px 18px; overflow-x: auto; white-space: pre; }
+.json button { font: inherit; color: #CFBDFE; background: none; border: 0; padding: 0 2px; border-radius: 4px; cursor: pointer; text-decoration: underline dotted rgba(207,189,254,.6); text-underline-offset: 3px; }
+.json button:hover, .json button.on { background: rgba(207,189,254,.18); }
+.explain { margin-top: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); min-height: 76px; font-size: .95rem; }
+.explain b { font-family: var(--font-mono); font-weight: 500; color: var(--accent); }
+
+/* Build stages */
+.stages { display: flex; flex-wrap: wrap; gap: 6px; }
+.stages button { font: 500 .85rem var(--font-mono); padding: 7px 11px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; position: relative; }
+.stages button.seen { border-color: var(--ok); }
+.stages button.on { background: var(--accent-strong); border-color: var(--accent-strong); color: #FFFFFF; }
+.stage-detail { margin-top: 14px; min-height: 84px; font-size: .95rem; }
+.stage-detail .ram { font-size: .82rem; color: var(--muted); }
+
+/* Architecture */
+.arch-wrap { overflow-x: auto; }
+.arch-wrap svg { min-width: 720px; display: block; }
+.arch text { font-family: var(--font-ui); fill: var(--text); }
+.arch .t { font: 700 14px var(--font); }
+.arch .s { font-size: 11.5px; fill: var(--muted); }
+.arch rect.b { fill: var(--panel); stroke: var(--line-strong); }
+.arch rect.k { fill: var(--accent-soft); stroke: var(--accent); }
+.arch rect.grp { fill: none; stroke: var(--line-strong); stroke-dasharray: 5 5; }
+.arch path, .arch line { stroke: var(--blue-2); stroke-width: 1.6; fill: none; }
+
+/* Quiz */
+.q { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.q:last-of-type { border-bottom: 0; }
+.q p.qt { font-weight: 600; margin-bottom: 10px; }
+.q .choices { display: grid; gap: 8px; font-family: var(--font-ui); }
+.q .choices button { text-align: left; font: 400 .95rem var(--font-ui); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); cursor: pointer; }
+.q .choices button:hover:not(:disabled) { border-color: var(--accent); }
+.q .choices button.right { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
+.q .choices button.wrong { border-color: var(--err); opacity: .8; }
+.q .choices button:disabled { cursor: default; }
+.q .fb { font-size: .92rem; margin-top: 10px; color: var(--muted); }
+.q .fb b { color: var(--text); }
+.score { font: 700 1.1rem var(--font); margin-top: 18px; }
+
+footer { margin-top: 96px; padding-top: 28px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+footer .logo { width: 96px; height: 36px; }
+.theme-btn { font: 500 .82rem var(--font-ui); background: none; border: 1px solid var(--line-strong); color: var(--text); padding: 6px 12px; border-radius: 999px; cursor: pointer; align-self: flex-start; }
+/* ---------- OSRM additions ---------- */
+svg .edge-label { font: 500 10.5px var(--font-ui); fill: var(--muted); }
+svg .sc-label { font: 600 10.5px var(--font-ui); fill: var(--accent); }
+svg .node.contracting circle { stroke: var(--accent); stroke-width: 4; }
+svg .node.contracted circle { fill: var(--line-strong); }
+svg .node.settled circle { fill: var(--accent); fill-opacity: .6; }
+svg .node .rank { font: 600 9px var(--font-ui); fill: var(--accent); }
+.ctrl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+.stats.four { grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 720px) { .stats.four { grid-template-columns: 1fr 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { font: 500 .88rem var(--font-ui); padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--text); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-strong); border-color: var(--accent-strong); color: #FFFFFF; }
+.deploys { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 14px; font-family: var(--font-ui); }
+.deploy { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--bg); font-size: .88rem; }
+.deploy b { display: block; font: 700 1rem var(--font); margin-bottom: 4px; }
+.files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.files code { font-size: .8rem; }
+.coord-warn { font-size: .88rem; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); }
+.mld svg text { font-family: var(--font-ui); }
+</style>
+</head>
+<body>
+<div class="mobile-bar">
+  <span class="logo" role="img" aria-label="Kalisio"></span>
+  <button class="theme-btn" data-theme-toggle type="button">Changer de thème</button>
+  <div class="progress"><span></span></div>
+</div>
+
+<div class="shell">
+  <aside class="toc" aria-label="Sommaire">
+    <span class="logo" role="img" aria-label="Kalisio"></span>
+    <nav>
+      <ol>
+        <li><a href="#idee">L'idée en une minute</a></li>
+        <li><a href="#profils">Les profils Lua</a></li>
+        <li><a href="#pipeline">Le pipeline de préparation</a></li>
+        <li><a href="#algos">CH ou MLD ?</a></li>
+        <li><a href="#service">Le service osrm-routed</a></li>
+        <li><a href="#api">Parler à l'API</a></li>
+        <li><a href="#reglages">Réglages du serveur</a></li>
+        <li><a href="#kalisio">Et chez Kalisio ?</a></li>
+        <li><a href="#quiz">Vérifie ta compréhension</a></li>
+      </ol>
+    </nav>
+    <div class="toc-foot">
+      <div class="progress"><span></span></div>
+      <button class="theme-btn" data-theme-toggle type="button">Changer de thème</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <h1>OSRM, la vitesse par le précalcul</h1>
+      <p class="intro">OSRM (Open Source Routing Machine) répond en quelques millisecondes parce qu'il a déjà fait le gros du travail avant la première requête. Lance la démo : prépare le graphe, puis compare combien de carrefours chaque méthode doit explorer pour le même trajet.</p>
+      <p class="by">Mission OSRM, stage DevSecOps de Hamidou, septembre 2026</p>
+
+      <div class="panel widget wide" id="ch">
+        <p class="widget-title">Contraction Hierarchies, en miniature</p>
+        <p class="widget-hint" id="ch-hint">Étape 1 : prépare le graphe. OSRM « contracte » les carrefours un par un, du moins important au plus important, et ajoute des raccourcis pour ne perdre aucun plus court chemin.</p>
+        <div class="ctrl">
+          <button class="btn" id="ch-step" type="button">Contracter le carrefour suivant</button>
+          <button class="btn ghost" id="ch-all" type="button">Tout préparer</button>
+          <button class="btn ghost" id="ch-reset" type="button">Recommencer</button>
+          <div class="seg" id="ch-show" role="group" aria-label="Exploration affichée" hidden>
+            <button type="button" data-show="ch" aria-pressed="true">Explorés par CH</button>
+            <button type="button" data-show="dij" aria-pressed="false">Explorés par Dijkstra</button>
+          </div>
+        </div>
+        <div class="map-wrap" style="margin-top:14px"><svg id="ch-svg" viewBox="0 0 600 400" role="img" aria-label="Petit réseau routier avec les raccourcis ajoutés par la préparation"></svg></div>
+        <div class="legend">
+          <span><i style="border-color:var(--road-motorway);border-top-width:5px"></i>Voie rapide</span>
+          <span><i style="border-color:var(--road-primary)"></i>Route</span>
+          <span><i style="border-color:var(--road-res)"></i>Rue</span>
+          <span><i style="border-color:var(--accent);border-top-style:dashed"></i>Raccourci ajouté</span>
+          <span><i style="border-color:var(--route);border-top-width:5px"></i>Itinéraire</span>
+        </div>
+        <div class="stats four">
+          <div class="stat"><b id="ch-sc">0</b><span>Raccourcis créés</span></div>
+          <div class="stat"><b id="ch-time">–</b><span>Temps du trajet</span></div>
+          <div class="stat"><b id="ch-dij">–</b><span>Explorés sans préparation</span></div>
+          <div class="stat"><b id="ch-chq">–</b><span>Explorés avec CH</span></div>
+        </div>
+        <p class="msg" id="ch-msg"></p>
+      </div>
+      <p class="muted content">À essayer : prépare tout, puis relie deux coins opposés du plan et bascule entre « Explorés par CH » et « Explorés par Dijkstra ». Les carrefours colorés en violet sont ceux que chaque méthode a dû examiner.</p>
+    </header>
+
+    <!-- 1 -->
+    <section class="chap content" id="idee">
+      <div class="chap-head"><span class="chap-num">1</span><h2>L'idée en une minute</h2></div>
+      <p class="lead">OSRM transforme une carte OpenStreetMap en un graphe routier préparé pour un véhicule donné, puis répond à des questions d'itinéraire en quelques millisecondes.</p>
+      <p>Toute sa philosophie tient en une idée : <strong>faire le maximum de travail avant la première requête</strong>. Le véhicule (le <em>profil</em>) est fixé dès la préparation, et OSRM précalcule une structure qui lui permet d'ignorer presque tout le graphe au moment de la requête.</p>
+      <p>La contrepartie est simple à retenir : ce qui n'a pas été prévu au moment de la préparation demande une nouvelle préparation. Changer le véhicule, ses vitesses ou ses règles d'accès, c'est relancer le pipeline.</p>
+      <div class="flow" aria-label="Les étapes d'OSRM">
+        <div class="box"><b>Carte OSM</b>fichier .osm.pbf</div>
+        <div class="arrow">extract<br>+ profil Lua</div>
+        <div class="box heavy"><b>Graphe</b>propre à un véhicule</div>
+        <div class="arrow">partition<br>customize</div>
+        <div class="box key"><b>Fichiers .osrm*</b>graphe préparé</div>
+        <div class="arrow">osrm-routed<br>port 5000</div>
+        <div class="box"><b>Itinéraire</b>en millisecondes</div>
+      </div>
+      <div class="callout"><p>Il y a donc deux mondes : la <strong>préparation</strong>, lourde et ponctuelle, qui produit des fichiers ; et le <strong>service</strong>, permanent, qui les lit. Pour le déploiement, ce sont deux problèmes distincts : où préparer, et comment servir.</p></div>
+    </section>
+
+    <!-- 2 -->
+    <section class="chap content" id="profils">
+      <div class="chap-head"><span class="chap-num">2</span><h2>Les profils Lua : le véhicule est figé au build</h2></div>
+      <p class="lead">Un profil est un script Lua qui lit les tags OSM de chaque voie et décide : ce véhicule peut-il passer, dans quel sens, et à quelle vitesse ?</p>
+      <p>L'image Docker fournit trois profils prêts à l'emploi : <code>/opt/car.lua</code>, <code>/opt/bicycle.lua</code> et <code>/opt/foot.lua</code>. On en choisit un à l'étape <code>osrm-extract</code>, et le résultat ne sert qu'à ce véhicule. Pour la voiture et le vélo, il faut donc deux builds et deux services.</p>
+      <div class="panel widget">
+        <p class="widget-title">Combien de déploiements pour mon besoin ?</p>
+        <p class="widget-hint">Choisis les modes de transport dont les applications ont besoin.</p>
+        <div class="chips" id="p-chips" role="group" aria-label="Modes de transport">
+          <button class="chip" type="button" data-p="car" aria-pressed="true">Voiture (car.lua)</button>
+          <button class="chip" type="button" data-p="bicycle" aria-pressed="false">Vélo (bicycle.lua)</button>
+          <button class="chip" type="button" data-p="foot" aria-pressed="false">Piéton (foot.lua)</button>
+        </div>
+        <div class="deploys" id="p-out"></div>
+        <p class="msg" id="p-msg"></p>
+      </div>
+      <h3>Ce qu'on peut encore choisir à la requête</h3>
+      <p>Presque rien, et c'est voulu. La seule préférence dynamique est <code>exclude</code>, limitée aux classes que le profil a déclarées à l'avance. Pour <code>car.lua</code>, ce sont <code>toll</code>, <code>motorway</code> et <code>ferry</code>. « Éviter les péages » fonctionne donc, mais « camion de 4 m de haut » demande un profil camion dédié et son propre build.</p>
+      <div class="callout"><p>Chaque mode de transport multiplie donc le coût : temps de préparation, stockage et RAM du service. Le nombre de profils nécessaires est le premier point à trancher avec Robin.</p></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="chap content" id="pipeline">
+      <div class="chap-head"><span class="chap-num">3</span><h2>Le pipeline de préparation</h2></div>
+      <p class="lead">Trois ou quatre commandes, toutes dans la même image, qui transforment le PBF en fichiers <code>.osrm*</code>. Il existe deux variantes selon l'algorithme choisi.</p>
+      <div class="panel widget">
+        <div class="seg" role="group" aria-label="Algorithme">
+          <button type="button" data-algo="mld" aria-pressed="true">MLD (recommandé)</button>
+          <button type="button" data-algo="ch" aria-pressed="false">CH</button>
+        </div>
+        <div class="pipe" id="pl" role="tablist" aria-label="Étapes du pipeline" style="margin-top:14px"></div>
+        <div class="pipe-detail" id="pl-detail" role="tabpanel"></div>
+      </div>
+      <p>Toutes les étapes lisent et écrivent dans le même dossier, à côté du PBF. Le service reçoit ensuite le <strong>nom de base</strong> (<code>/data/france-latest.osrm</code>) et retrouve tout seul les fichiers qui l'accompagnent.</p>
+      <div class="callout"><p>Le résultat n'est pas un fichier unique mais une famille d'une vingtaine de fichiers <code>.osrm.*</code>, qui doivent toujours rester ensemble et être produits par la même version d'OSRM que celle du service. Un dossier par version de carte contiendra toute cette famille.</p></div>
+    </section>
+
+    <!-- 4 -->
+    <section class="chap content" id="algos">
+      <div class="chap-head"><span class="chap-num">4</span><h2>CH ou MLD ?</h2></div>
+      <p class="lead">Les deux algorithmes accélèrent les requêtes par précalcul, mais ils ne précalculent pas la même chose.</p>
+      <h3>Contraction Hierarchies (CH)</h3>
+      <p>C'est ce que montre la démo du haut. Les carrefours sont classés du moins important au plus important, puis retirés un par un. Chaque fois qu'un plus court chemin passait par un carrefour retiré, on le remplace par un raccourci. À la requête, on ne fait que « monter » vers les carrefours plus importants depuis le départ et depuis l'arrivée, jusqu'à ce que les deux recherches se rencontrent. Presque tout le graphe est ignoré.</p>
+      <h3>Multi-Level Dijkstra (MLD)</h3>
+      <p>Le graphe est découpé en cellules, elles-mêmes regroupées en cellules plus grandes, sur plusieurs niveaux. Pour chaque cellule, on précalcule les temps de traversée entre ses points d'entrée et de sortie. Une requête explore finement la cellule de départ et celle d'arrivée, et saute les autres d'un bloc.</p>
+      <div class="panel mld" aria-hidden="false">
+        <svg viewBox="0 0 600 220" role="img" aria-label="Cellules imbriquées : le trajet traverse les grandes cellules d'un seul saut">
+          <rect x="10" y="10" width="580" height="200" rx="10" fill="none" style="stroke:var(--line-strong)"/>
+          <rect x="20" y="20" width="180" height="180" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+          <rect x="210" y="20" width="180" height="180" rx="8" fill="none" style="stroke:var(--line-strong)"/>
+          <rect x="400" y="20" width="180" height="180" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+          <line x1="110" y1="20" x2="110" y2="200" style="stroke:var(--line)"/><line x1="20" y1="110" x2="200" y2="110" style="stroke:var(--line)"/>
+          <line x1="490" y1="20" x2="490" y2="200" style="stroke:var(--line)"/><line x1="400" y1="110" x2="580" y2="110" style="stroke:var(--line)"/>
+          <circle cx="60" cy="150" r="7" style="fill:var(--accent-strong)"/>
+          <circle cx="540" cy="60" r="7" style="fill:var(--bg);stroke:var(--accent);stroke-width:3"/>
+          <circle cx="200" cy="120" r="5" style="fill:var(--blue-2)"/><circle cx="400" cy="90" r="5" style="fill:var(--blue-2)"/>
+          <path d="M60,150 L110,140 L160,125 L200,120" fill="none" style="stroke:var(--route);stroke-width:4;stroke-linecap:round"/>
+          <path d="M200,120 C260,60 340,160 400,90" fill="none" style="stroke:var(--route);stroke-width:4;stroke-dasharray:8 7"/>
+          <path d="M400,90 L450,80 L500,70 L540,60" fill="none" style="stroke:var(--route);stroke-width:4;stroke-linecap:round"/>
+          <text x="110" y="214" text-anchor="middle" style="font-size:11px;fill:var(--muted)">exploré finement</text>
+          <text x="300" y="214" text-anchor="middle" style="font-size:11px;fill:var(--muted)">traversée précalculée, un seul saut</text>
+          <text x="490" y="214" text-anchor="middle" style="font-size:11px;fill:var(--muted)">exploré finement</text>
+        </svg>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th></th><th>CH</th><th>MLD</th></tr></thead>
+        <tbody>
+          <tr><td>Vitesse des requêtes</td><td class="yes">la plus rapide</td><td>très rapide</td></tr>
+          <tr><td>Grandes matrices (<code>/table</code>)</td><td class="yes">recommandé</td><td>correct</td></tr>
+          <tr><td>Changer les vitesses (trafic)</td><td class="no">tout recontracter</td><td class="yes"><code>osrm-customize</code> seul, rapide</td></tr>
+          <tr><td>Commandes</td><td><code>extract</code> → <code>contract</code></td><td><code>extract</code> → <code>partition</code> → <code>customize</code></td></tr>
+          <tr><td>Option du service</td><td><code>--algorithm ch</code></td><td><code>--algorithm mld</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Le projet recommande MLD par défaut. On part donc sur MLD, et on ne passera à CH que si un besoin de grosses matrices apparaît.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="chap content" id="service">
+      <div class="chap-head"><span class="chap-num">5</span><h2>Le service osrm-routed</h2></div>
+      <p class="lead">Un seul binaire, un seul jeu de données, un port : <code>osrm-routed --algorithm mld /data/france-latest.osrm</code>, qui écoute sur 5000.</p>
+      <p>Le point opérationnel essentiel : <strong>osrm-routed charge par défaut le jeu de données en RAM.</strong> La mémoire du service suit donc la taille des fichiers <code>.osrm*</code>, c'est-à-dire la zone couverte. Chaque profil supplémentaire est un service de plus, avec sa propre mémoire.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Mode de chargement</th><th>Principe</th><th>Pour Kalisio</th></tr></thead>
+        <tbody>
+          <tr><td>Par défaut</td><td>les fichiers sont lus en RAM au démarrage</td><td>simple, mais <code>resources</code> à dimensionner sur la taille des fichiers</td></tr>
+          <tr><td><code>--mmap</code></td><td>les fichiers sont projetés en mémoire : seules les pages lues occupent la RAM</td><td>moins de RAM réservée, plus sensible à la vitesse du NFS</td></tr>
+          <tr><td><code>osrm-datastore</code></td><td>données en mémoire partagée, rechargées à chaud</td><td>plus complexe, inutile avec le rolling update de Kubernetes</td></tr>
+        </tbody>
+      </table></div>
+      <p>On mesurera les deux premiers modes en local sur Andorre puis sur la France, en relevant <code>memory.peak</code> et <code>docker stats</code>.</p>
+      <div class="callout"><p><strong>Pas d'endpoint de santé.</strong> osrm-routed n'expose pas de route dédiée à la supervision. Pour la sonde Kubernetes, on interrogera une vraie requête légère, par exemple un <code>/nearest</code> sur un point connu de la zone.</p></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="chap content" id="api">
+      <div class="chap-head"><span class="chap-num">6</span><h2>Parler à l'API</h2></div>
+      <p class="lead">Tout passe par des requêtes GET, avec les coordonnées directement dans l'URL.</p>
+      <div class="code"><pre>GET /{service}/v1/{profil}/{lon},{lat};{lon},{lat}?options</pre></div>
+      <div class="callout"><p><strong>Le piège n°1 : longitude avant latitude.</strong> On a l'habitude d'écrire un point en <code>lat,lon</code>, comme sur un GPS. OSRM attend <code>lon,lat</code>. Inverser les deux donne en général <code>NoSegment</code>, parce que le point tombe hors de la zone, ou pire, un trajet absurde.</p></div>
+      <p>Autre point à connaître : osrm-routed ne sert qu'un seul jeu de données. Le segment <code>{profil}</code> de l'URL (<code>driving</code>, <code>car</code>…) ne choisit donc pas le véhicule : c'est le déploiement appelé qui le fait. On le vérifiera en local.</p>
+
+      <div class="panel widget">
+        <p class="widget-title">Construis ta requête</p>
+        <p class="widget-hint">Les points sont en Andorre, une petite zone idéale pour les premiers tests.</p>
+        <div class="form-grid">
+          <label class="f">Service
+            <select id="b-svc">
+              <option value="route">route (itinéraire)</option>
+              <option value="nearest">nearest (accroche au réseau)</option>
+              <option value="table">table (matrice)</option>
+              <option value="trip">trip (tournée optimisée)</option>
+            </select>
+          </label>
+          <label class="f">Serveur
+            <input type="text" id="b-host" value="localhost:5000" spellcheck="false">
+          </label>
+        </div>
+        <div class="opts">
+          <label><input type="checkbox" id="b-swap"> Écrire les points en lat,lon (l'erreur classique)</label>
+          <label id="b-steps-l"><input type="checkbox" id="b-steps" checked> Instructions (<code>steps</code>)</label>
+          <label id="b-geo-l"><input type="checkbox" id="b-geo"> Tracé en GeoJSON</label>
+          <label id="b-toll-l"><input type="checkbox" id="b-toll"> Éviter les péages (<code>exclude=toll</code>)</label>
+        </div>
+        <div class="code"><button class="copy" type="button" data-copy="b-curl">Copier</button><pre id="b-curl"></pre></div>
+        <div class="coord-warn" id="b-warn" hidden></div>
+      </div>
+
+      <h3>Lire la réponse</h3>
+      <p>Voici la forme d'une réponse <code>/route</code>. Les valeurs sont illustratives : on les remplacera par tes mesures réelles. Clique sur chaque champ.</p>
+      <div class="json" id="resp"></div>
+      <div class="explain" id="resp-explain" aria-live="polite">Clique sur un champ en violet.</div>
+
+      <h3>Les services</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Service</th><th>Question posée</th></tr></thead>
+        <tbody>
+          <tr><td><code>/route</code></td><td>Comment aller de A à B, avec étapes éventuelles ?</td></tr>
+          <tr><td><code>/nearest</code></td><td>Sur quelles routes ce point s'accroche-t-il ? Utile pour déboguer et pour la sonde de vie.</td></tr>
+          <tr><td><code>/table</code></td><td>Matrice de temps ou de distances entre plusieurs départs et arrivées.</td></tr>
+          <tr><td><code>/trip</code></td><td>Dans quel ordre visiter ces points ? (voyageur de commerce)</td></tr>
+          <tr><td><code>/match</code></td><td>Quelles routes a vraiment suivi cette trace GPS ?</td></tr>
+          <tr><td><code>/tile</code></td><td>Tuile vectorielle du graphe, pour visualiser les données sur une carte.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Les erreurs à reconnaître</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Code</th><th>Signification</th></tr></thead>
+        <tbody>
+          <tr><td><code>NoSegment</code></td><td>Un point ne s'accroche à aucune route : hors zone, ou lat/lon inversés.</td></tr>
+          <tr><td><code>NoRoute</code></td><td>Les points sont accrochés mais aucun chemin ne les relie (île, zone fermée).</td></tr>
+          <tr><td><code>TooBig</code></td><td>La requête dépasse une limite du serveur, par exemple la taille d'une matrice.</td></tr>
+          <tr><td><code>InvalidQuery</code>, <code>InvalidOptions</code></td><td>URL ou paramètre mal formés.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="chap content" id="reglages">
+      <div class="chap-head"><span class="chap-num">7</span><h2>Les réglages du serveur</h2></div>
+      <p class="lead">osrm-routed se règle entièrement par ses options de lancement. Pas de fichier de configuration : tout est dans la commande, donc dans les <code>args</code> du futur chart.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Option</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td><code>--algorithm mld</code></td><td>Doit correspondre à la préparation : <code>mld</code> après partition et customize, <code>ch</code> après contract.</td></tr>
+          <tr><td><code>--port</code>, <code>--ip</code></td><td>Où écouter. Par défaut le port 5000, sur toutes les interfaces.</td></tr>
+          <tr><td><code>--threads</code></td><td>Nombre de requêtes traitées en parallèle.</td></tr>
+          <tr><td><code>--mmap</code></td><td>Projeter les fichiers en mémoire au lieu de les charger entièrement.</td></tr>
+          <tr><td><code>--max-table-size</code></td><td>Taille maximale d'une matrice <code>/table</code>. Au-delà, la requête répond <code>TooBig</code>.</td></tr>
+          <tr><td><code>--max-viaroute-size</code></td><td>Nombre maximal de points dans un <code>/route</code>.</td></tr>
+          <tr><td><code>--max-trip-size</code>, <code>--max-matching-size</code></td><td>Mêmes limites pour <code>/trip</code> et <code>/match</code>.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Les limites existent pour protéger le serveur : une matrice de 1 000 × 1 000 points peut occuper un cœur pendant longtemps. On les relèvera seulement si un besoin réel apparaît, en mesurant l'impact.</p>
+      <p>Pour la liste exacte et les valeurs par défaut de la version déployée, la source de vérité reste l'aide du binaire :</p>
+      <div class="code"><button class="copy" type="button" data-copy="help-cmd">Copier</button><pre id="help-cmd">docker run --rm ghcr.io/project-osrm/osrm-backend osrm-routed --help</pre></div>
+      <h3>Mettre à jour la carte</h3>
+      <p>OpenStreetMap change tous les jours. Mettre à jour OSRM, c'est relancer tout le pipeline sur un PBF récent, dans un nouveau dossier, puis basculer le service sur ce dossier. Avec MLD, un cas particulier est plus léger : changer seulement les vitesses (par exemple avec des données de trafic) ne demande que <code>osrm-customize</code> avec <code>--segment-speed-file</code>.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="chap wide" id="kalisio">
+      <div class="content">
+        <div class="chap-head"><span class="chap-num">8</span><h2>Et chez Kalisio ?</h2></div>
+      </div>
+      <div class="panel arch-wrap">
+        <svg class="arch" viewBox="0 0 940 250" role="img" aria-label="Architecture proposée pour OSRM">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--blue-2);stroke:none"/></marker></defs>
+          <rect class="b" x="10" y="95" width="130" height="64" rx="10"/>
+          <text class="t" x="75" y="122" text-anchor="middle">Geofabrik</text>
+          <text class="s" x="75" y="142" text-anchor="middle">fichiers .osm.pbf</text>
+          <path d="M140,127 L182,127" marker-end="url(#ah)"/>
+          <rect class="b" x="186" y="85" width="170" height="84" rx="10"/>
+          <text class="t" x="271" y="113" text-anchor="middle">build_osrm.sh</text>
+          <text class="s" x="271" y="133" text-anchor="middle">extract, partition,</text>
+          <text class="s" x="271" y="151" text-anchor="middle">customize, par profil</text>
+          <path d="M356,127 L398,127" marker-end="url(#ah)"/>
+          <rect class="k" x="402" y="85" width="150" height="84" rx="10"/>
+          <text class="t" x="477" y="113" text-anchor="middle">S3 puis NAS</text>
+          <text class="s" x="477" y="133" text-anchor="middle">osrm_data/car/</text>
+          <text class="s" x="477" y="151" text-anchor="middle">france-AAAA-MM/</text>
+          <path d="M552,127 L594,127" marker-end="url(#ah)"/>
+          <rect class="grp" x="598" y="20" width="200" height="214" rx="12"/>
+          <text class="s" x="698" y="40" text-anchor="middle">cluster</text>
+          <rect class="b" x="614" y="54" width="168" height="72" rx="10"/>
+          <text class="t" x="698" y="80" text-anchor="middle">Deployment osrm-car</text>
+          <text class="s" x="698" y="99" text-anchor="middle">NFS en lecture seule</text>
+          <text class="s" x="698" y="115" text-anchor="middle">osrm-routed --algorithm mld</text>
+          <path d="M698,126 L698,156" marker-end="url(#ah)"/>
+          <rect class="b" x="614" y="160" width="168" height="58" rx="10"/>
+          <text class="t" x="698" y="185" text-anchor="middle">Service</text>
+          <text class="s" x="698" y="204" text-anchor="middle">ClusterIP :5000</text>
+          <path d="M782,189 L824,189" marker-end="url(#ah)"/>
+          <rect class="b" x="828" y="155" width="104" height="68" rx="10"/>
+          <text class="t" x="880" y="183" text-anchor="middle">Apps</text>
+          <text class="s" x="880" y="202" text-anchor="middle">HTTP GET</text>
+        </svg>
+      </div>
+      <div class="content">
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Élément</th><th>Choix pour OSRM</th></tr></thead>
+          <tbody>
+            <tr><td>Image</td><td><code>ghcr.io/project-osrm/osrm-backend</code>, version épinglée</td></tr>
+            <tr><td>Commande (<code>args</code>)</td><td><code>osrm-routed --algorithm mld /data/&lt;zone&gt;-latest.osrm</code></td></tr>
+            <tr><td>Port</td><td>5000</td></tr>
+            <tr><td>Dossier sur le NAS</td><td><code>osrm_data/&lt;profil&gt;/&lt;zone&gt;-AAAA-MM/</code>, un dossier par version de carte</td></tr>
+            <tr><td>Bascule de carte</td><td>changer <code>dataSubPath</code>, rolling update sans coupure</td></tr>
+            <tr><td>Sonde de vie</td><td>un <code>/nearest</code> sur un point de la zone</td></tr>
+            <tr><td>Déploiements</td><td>1 par profil (release <code>osrm-car</code>…)</td></tr>
+            <tr><td>Ressources</td><td>à mesurer : suivent la taille des fichiers</td></tr>
+          </tbody>
+        </table></div>
+        <h3>La suite de la mission</h3>
+        <ol>
+          <li><strong>Local, Andorre</strong> : pipeline MLD avec Docker, requêtes <code>/route</code> et <code>/nearest</code>, mesure de la RAM avec et sans <code>--mmap</code>.</li>
+          <li><strong>Local, France</strong> : même pipeline, avec des trajets de référence (Castelnaudary → Toulouse, Toulouse → Paris) pour mesurer temps de préparation, taille des fichiers et RAM.</li>
+          <li><strong>Chart <code>osrm</code></strong> dans kargo, basé sur <code>kargo.deployment</code>, testé sur minikube.</li>
+          <li><strong>Cluster</strong> : <code>provision-data</code>, release <code>osrm-car</code> dans <code>dev</code>, collection Bruno.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="chap content" id="quiz">
+      <div class="chap-head"><span class="chap-num">9</span><h2>Vérifie ta compréhension</h2></div>
+      <p class="lead">Six questions sur les points clés d'OSRM.</p>
+      <div id="quiz-box"></div>
+      <p class="score" id="quiz-score" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <span class="logo" role="img" aria-label="Kalisio"></span>
+      <span>Support de formation interne, mission OSRM, 2026. Sources : dépôt et documentation Project-OSRM/osrm-backend.</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function () {
+  "use strict";
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  /* ---------- Theme ---------- */
+  function currentTheme() {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t) return t;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+  try { var saved = localStorage.getItem("osrm-course-theme"); if (saved) document.documentElement.setAttribute("data-theme", saved); } catch (e) {}
+  document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("osrm-course-theme", next); } catch (e) {}
+    });
+  });
+
+  /* ---------- TOC + progress ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".toc nav a"));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  function onScroll() {
+    var h = document.documentElement;
+    var p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+    document.querySelectorAll(".progress span").forEach(function (s) { s.style.width = (p * 100).toFixed(1) + "%"; });
+    var idx = -1;
+    sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < window.innerHeight * 0.35) idx = i; });
+    links.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* ---------- Contraction Hierarchies demo ---------- */
+  // A small town on a jittered grid: a motorway on the top row, a few main
+  // roads, residential streets elsewhere. Weights are travel times.
+  var COLS = 7, ROWS = 5, NODES = [], EDGES = [];
+  (function build() {
+    var dx = 520 / (COLS - 1), dy = 320 / (ROWS - 1), seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++)
+      NODES.push([40 + c * dx + (rnd() - 0.5) * dx * 0.35, 40 + r * dy + (rnd() - 0.5) * dy * 0.35]);
+    var F = { motorway: 0.35, primary: 0.8, residential: 1.3 }, pr = Math.floor(ROWS / 2), pc = Math.floor(COLS / 2);
+    function id(r, c) { return r * COLS + c; }
+    function add(a, b, t) { var A = NODES[a], B = NODES[b]; EDGES.push({ u: a, v: b, type: t, w: Math.round(Math.hypot(A[0] - B[0], A[1] - B[1]) * F[t]) }); }
+    for (var r2 = 0; r2 < ROWS; r2++) for (var c2 = 0; c2 < COLS; c2++) {
+      if (c2 + 1 < COLS) add(id(r2, c2), id(r2, c2 + 1), r2 === 0 ? "motorway" : r2 === pr ? "primary" : "residential");
+      if (r2 + 1 < ROWS) add(id(r2, c2), id(r2 + 1, c2), (c2 === 0 || c2 === COLS - 1 || c2 === pc) ? "primary" : "residential");
+    }
+  })();
+  var N = NODES.length;
+
+  function baseAdj() {
+    var adj = []; for (var i = 0; i < N; i++) adj.push({});
+    EDGES.forEach(function (e) { adj[e.u][e.v] = { w: e.w, mid: -1 }; adj[e.v][e.u] = { w: e.w, mid: -1 }; });
+    return adj;
+  }
+
+  // Plain Dijkstra with an optional edge filter and cost bound
+  function dijkstra(adj, s, t, allow, bound) {
+    var dist = new Array(N).fill(Infinity), done = new Array(N).fill(false), prev = new Array(N).fill(-1), order = [];
+    dist[s] = 0;
+    while (true) {
+      var u = -1;
+      for (var j = 0; j < N; j++) if (!done[j] && dist[j] < Infinity && (u < 0 || dist[j] < dist[u])) u = j;
+      if (u < 0 || (bound !== undefined && dist[u] > bound)) break;
+      done[u] = true; order.push(u);
+      if (u === t) break;
+      for (var k in adj[u]) {
+        var x = +k;
+        if (allow && !allow(u, x)) continue;
+        var nd = dist[u] + adj[u][k].w;
+        if (nd < dist[x]) { dist[x] = nd; prev[x] = u; }
+      }
+    }
+    return { dist: dist, prev: prev, order: order };
+  }
+
+  var ch = null;
+  function resetCH() {
+    ch = { adj: baseAdj(), contracted: new Array(N).fill(false), rank: new Array(N).fill(-1), order: [], shortcuts: [], nbDone: new Array(N).fill(0) };
+  }
+  function neededShortcuts(v) {
+    var adj = ch.adj, nb = Object.keys(adj[v]).map(Number).filter(function (x) { return !ch.contracted[x]; }), out = [];
+    for (var i = 0; i < nb.length; i++) for (var j = i + 1; j < nb.length; j++) {
+      var u = nb[i], w = nb[j], via = adj[u][v].w + adj[v][w].w;
+      var r = dijkstra(adj, u, w, function (a, b) { return b !== v && !ch.contracted[b]; }, via);
+      if (!(r.dist[w] <= via)) out.push([u, w, via]);
+    }
+    return { list: out, degree: nb.length };
+  }
+  // Importance = shortcuts created - edges removed + contracted neighbours:
+  // spreads the contraction evenly and keeps the big roads for the end.
+  function nextNode() {
+    var best = -1, bestP = Infinity;
+    for (var v = 0; v < N; v++) {
+      if (ch.contracted[v]) continue;
+      var s = neededShortcuts(v), p = s.list.length - s.degree + ch.nbDone[v];
+      if (p < bestP) { bestP = p; best = v; }
+    }
+    return best;
+  }
+  function contract(v) {
+    var s = neededShortcuts(v), added = 0;
+    s.list.forEach(function (sc) {
+      var u = sc[0], w = sc[1], via = sc[2];
+      if (!ch.adj[u][w] || ch.adj[u][w].w > via) {
+        ch.adj[u][w] = { w: via, mid: v }; ch.adj[w][u] = { w: via, mid: v };
+        ch.shortcuts.push({ u: u, v: w }); added++;
+      }
+    });
+    Object.keys(ch.adj[v]).forEach(function (x) { if (!ch.contracted[+x]) ch.nbDone[+x]++; });
+    ch.contracted[v] = true; ch.rank[v] = ch.order.length; ch.order.push(v);
+    return added;
+  }
+  function unpack(u, w) {
+    var e = ch.adj[u][w];
+    if (!e || e.mid < 0) return [u, w];
+    var a = unpack(u, e.mid), b = unpack(e.mid, w);
+    return a.concat(b.slice(1));
+  }
+  // Bidirectional upward search, alternating directions, with the usual
+  // stopping criterion and stall-on-demand, as a real CH query does.
+  function chQuery(s, t) {
+    var d = [new Array(N).fill(Infinity), new Array(N).fill(Infinity)], st = [new Array(N).fill(false), new Array(N).fill(false)];
+    var pv = [new Array(N).fill(-1), new Array(N).fill(-1)], settled = [], best = Infinity, meet = -1, turn = 0;
+    d[0][s] = 0; d[1][t] = 0;
+    function pop(k) { var u = -1; for (var j = 0; j < N; j++) if (!st[k][j] && d[k][j] < Infinity && (u < 0 || d[k][j] < d[k][u])) u = j; return u; }
+    while (true) {
+      var uf = pop(0), ub = pop(1), kf = uf < 0 ? Infinity : d[0][uf], kb = ub < 0 ? Infinity : d[1][ub];
+      if (Math.min(kf, kb) >= best) break;
+      var dir = (turn++ % 2 === 0) ? (kf < best ? 0 : 1) : (kb < best ? 1 : 0);
+      var u = dir === 0 ? uf : ub;
+      if (u < 0) continue;
+      st[dir][u] = true; settled.push(u);
+      if (d[1 - dir][u] < Infinity && d[dir][u] + d[1 - dir][u] < best) { best = d[dir][u] + d[1 - dir][u]; meet = u; }
+      var stalled = false;
+      for (var k in ch.adj[u]) { var x = +k; if (ch.rank[x] > ch.rank[u] && d[dir][x] + ch.adj[u][k].w < d[dir][u]) { stalled = true; break; } }
+      if (stalled) continue;
+      for (var k2 in ch.adj[u]) {
+        var y = +k2;
+        if (ch.rank[y] <= ch.rank[u]) continue;
+        var nd = d[dir][u] + ch.adj[u][k2].w;
+        if (nd < d[dir][y]) {
+          d[dir][y] = nd; pv[dir][y] = u;
+          if (d[1 - dir][y] < Infinity && nd + d[1 - dir][y] < best) { best = nd + d[1 - dir][y]; meet = y; }
+        }
+      }
+    }
+    if (meet < 0) return null;
+    var fw = [], x2 = meet; while (x2 !== s) { fw.unshift([pv[0][x2], x2]); x2 = pv[0][x2]; }
+    var bw = []; x2 = meet; while (x2 !== t) { bw.push([x2, pv[1][x2]]); x2 = pv[1][x2]; }
+    var nodes = [s];
+    fw.concat(bw).forEach(function (p) { nodes = nodes.concat(unpack(p[0], p[1]).slice(1)); });
+    return { cost: best, settled: settled, nodes: nodes };
+  }
+
+  var svg = $("ch-svg"), gE = el("g", {}, svg), gS = el("g", {}, svg), gR = el("g", {}, svg), gN = el("g", {}, svg);
+  var nodeEls = [], pick = { s: -1, t: -1 }, timers = [], last = null, show = "ch";
+  function roadStyle(t) {
+    return { motorway: ["var(--road-motorway)", 7], primary: ["var(--road-primary)", 4.5], residential: ["var(--road-res)", 3] }[t];
+  }
+  EDGES.forEach(function (e) {
+    var a = NODES[e.u], b = NODES[e.v], st = roadStyle(e.type);
+    el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: st[0], "stroke-width": st[1], "stroke-linecap": "round" }, gE);
+  });
+  NODES.forEach(function (n, i) {
+    var g = el("g", { "class": "node", tabindex: 0, role: "button", "aria-label": "Carrefour " + (i + 1) }, gN);
+    el("circle", { cx: n[0], cy: n[1], r: 9 }, g);
+    g.addEventListener("click", function () { onPick(i); });
+    g.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); onPick(i); } });
+    nodeEls.push(g);
+  });
+
+  function drawShortcuts() {
+    while (gS.firstChild) gS.removeChild(gS.firstChild);
+    ch.shortcuts.forEach(function (sc) {
+      var a = NODES[sc.u], b = NODES[sc.v];
+      el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: "var(--accent)", "stroke-width": 1.6, "stroke-dasharray": "5 5", opacity: 0.75 }, gS);
+    });
+  }
+  function drawNodes(active) {
+    var explored = {};
+    if (last && pick.t >= 0) (show === "ch" && last.ch ? last.ch.settled : last.dij.order).forEach(function (i) { explored[i] = true; });
+    nodeEls.forEach(function (g, i) {
+      g.classList.toggle("contracted", ch.contracted[i] && !prepared() && !explored[i]);
+      g.classList.toggle("contracting", i === active);
+      g.classList.toggle("settled", !!explored[i]);
+      g.classList.toggle("start", i === pick.s);
+      g.classList.toggle("end", i === pick.t);
+    });
+  }
+  function clearRoute() { while (gR.firstChild) gR.removeChild(gR.firstChild); }
+  function drawRoute(nodes) {
+    clearRoute();
+    var d = nodes.map(function (i, k) { return (k ? "L" : "M") + NODES[i][0] + "," + NODES[i][1]; }).join(" ");
+    var p = el("path", { d: d, fill: "none", stroke: "var(--route)", "stroke-width": 6, "stroke-linecap": "round", "stroke-linejoin": "round", opacity: 0.95 }, gR);
+    if (!reduced) {
+      var L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      p.getBoundingClientRect(); p.style.transition = "stroke-dashoffset .6s ease-out"; p.style.strokeDashoffset = 0;
+    }
+  }
+  function prepared() { return ch.order.length === N; }
+  function fmt(w) { return (w / 10).toFixed(1).replace(".", ",") + " min"; }
+
+  function step() {
+    if (prepared()) return;
+    var v = nextNode(), added = contract(v);
+    drawShortcuts(); drawNodes(v); $("ch-sc").textContent = ch.shortcuts.length;
+    $("ch-msg").textContent = "Carrefour contracté (" + ch.order.length + " sur " + N + ") : " +
+      (added ? added + " raccourci" + (added > 1 ? "s" : "") + " ajouté" + (added > 1 ? "s" : "") + " pour garder les plus courts chemins qui passaient par lui." : "aucun raccourci nécessaire, un autre chemin aussi court existe.");
+    if (prepared()) {
+      $("ch-step").disabled = true; $("ch-all").disabled = true;
+      $("ch-hint").textContent = "Étape 2 : le graphe est préparé. Clique un carrefour de départ, puis un carrefour d'arrivée loin du premier.";
+      $("ch-msg").textContent = "Préparation terminée : " + ch.shortcuts.length + " raccourcis pour " + N + " carrefours. C'est ce travail que fait osrm-contract, une seule fois, avant la première requête.";
+      drawNodes(-1);
+    }
+  }
+  function prepareAll() {
+    timers.forEach(clearTimeout); timers = [];
+    var remaining = N - ch.order.length, delay = reduced ? 0 : 90;
+    for (var i = 0; i < remaining; i++) timers.push(setTimeout(step, i * delay));
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    resetCH(); pick = { s: -1, t: -1 }; last = null; clearRoute(); drawShortcuts(); drawNodes(-1);
+    $("ch-step").disabled = false; $("ch-all").disabled = false;
+    ["ch-time", "ch-dij", "ch-chq"].forEach(function (id) { $(id).textContent = "–"; });
+    $("ch-sc").textContent = "0"; $("ch-msg").textContent = "";
+    $("ch-show").hidden = true;
+    $("ch-hint").textContent = "Étape 1 : prépare le graphe. OSRM « contracte » les carrefours un par un, du moins important au plus important, et ajoute des raccourcis pour ne perdre aucun plus court chemin.";
+  }
+  function onPick(i) {
+    if (pick.s < 0 || pick.t >= 0) {
+      pick = { s: i, t: -1 }; last = null; clearRoute(); drawNodes(-1); $("ch-show").hidden = true;
+      $("ch-msg").textContent = "Départ choisi. Clique l'arrivée."; return;
+    }
+    if (i === pick.s) return;
+    pick.t = i;
+    var dij = dijkstra(baseAdj(), pick.s, pick.t);
+    last = { dij: dij, ch: prepared() ? chQuery(pick.s, pick.t) : null };
+    $("ch-dij").textContent = dij.order.length;
+    $("ch-time").textContent = fmt(dij.dist[pick.t]);
+    if (!last.ch) {
+      var nodes = [], x = pick.t; while (x >= 0) { nodes.unshift(x); x = dij.prev[x]; }
+      drawRoute(nodes); $("ch-chq").textContent = "–"; show = "dij"; drawNodes(-1);
+      $("ch-msg").textContent = "Sans préparation, Dijkstra explore " + dij.order.length + " carrefours (en violet) avant d'atteindre l'arrivée. Prépare le graphe pour comparer.";
+      return;
+    }
+    drawRoute(last.ch.nodes); $("ch-chq").textContent = last.ch.settled.length;
+    show = "ch"; setShow(); $("ch-show").hidden = false;
+    var ratio = dij.order.length / last.ch.settled.length;
+    $("ch-msg").textContent = "Même trajet, même temps (" + fmt(last.ch.cost) + "). Avec CH, les deux recherches ne montent que vers des carrefours plus importants : " +
+      last.ch.settled.length + " carrefours explorés contre " + dij.order.length + (ratio >= 1.2 ? ", soit " + ratio.toFixed(1).replace(".", ",") + " fois moins" : "") +
+      ". Sur une vraie carte de millions de carrefours, l'écart se compte en milliers de fois.";
+  }
+  function setShow() {
+    document.querySelectorAll("#ch-show [data-show]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-show") === show)); });
+    drawNodes(-1);
+  }
+  document.querySelectorAll("#ch-show [data-show]").forEach(function (b) {
+    b.addEventListener("click", function () { show = b.getAttribute("data-show"); setShow(); });
+  });
+  $("ch-step").addEventListener("click", step);
+  $("ch-all").addEventListener("click", prepareAll);
+  $("ch-reset").addEventListener("click", reset);
+  resetCH(); drawNodes(-1);
+
+  /* ---------- Profiles (chapter 2) ---------- */
+  var PROF = { car: ["Voiture", "car.lua", "osrm-car"], bicycle: ["Vélo", "bicycle.lua", "osrm-bike"], foot: ["Piéton", "foot.lua", "osrm-foot"] };
+  function renderProfiles() {
+    var on = Array.prototype.filter.call(document.querySelectorAll("#p-chips .chip"), function (c) { return c.getAttribute("aria-pressed") === "true"; })
+      .map(function (c) { return c.getAttribute("data-p"); });
+    var html = on.map(function (p) {
+      var d = PROF[p];
+      return "<div class='deploy'><b>" + d[2] + "</b>osrm-extract -p /opt/" + d[1] + "<br>dossier <code>osrm_data/" + p + "/</code><br>1 Deployment + 1 Service</div>";
+    }).join("");
+    $("p-out").innerHTML = html || "<div class='deploy'>Choisis au moins un mode.</div>";
+    $("p-msg").textContent = on.length ? on.length + " mode" + (on.length > 1 ? "s" : "") + " = " + on.length + " build" + (on.length > 1 ? "s" : "") + ", " + on.length + " jeu" + (on.length > 1 ? "x" : "") + " de fichiers et " + on.length + " service" + (on.length > 1 ? "s" : "") + " à dimensionner." : "";
+  }
+  document.querySelectorAll("#p-chips .chip").forEach(function (c) {
+    c.addEventListener("click", function () { c.setAttribute("aria-pressed", String(c.getAttribute("aria-pressed") !== "true")); renderProfiles(); });
+  });
+  renderProfiles();
+
+  /* ---------- Pipeline (chapter 3) ---------- */
+  var BASE = "/data/andorra-latest";
+  var STEPS = {
+    mld: [
+      { n: "extract", r: "profil appliqué", t: "osrm-extract applique le profil", d: "Lit chaque voie du PBF, exécute le profil Lua pour décider accès, sens et vitesse, puis construit le graphe du véhicule. C'est l'étape la plus gourmande en RAM et en temps : c'est elle qui dimensionne la machine de build.", c: "osrm-extract -p /opt/car.lua " + BASE + ".osm.pbf", f: [".osrm.ebg", ".osrm.geometry", ".osrm.names", ".osrm.nbg_nodes", ".osrm.properties", ".osrm.timestamp", "…"] },
+      { n: "partition", r: "cellules", t: "osrm-partition découpe en cellules", d: "Découpe récursivement le graphe en cellules imbriquées, sur plusieurs niveaux. Ce découpage ne dépend que de la forme du réseau, pas des vitesses.", c: "osrm-partition " + BASE + ".osrm", f: [".osrm.partition", ".osrm.cells", "…"] },
+      { n: "customize", r: "poids", t: "osrm-customize calcule les traversées", d: "Calcule, pour chaque cellule, le coût de traversée entre ses points d'entrée et de sortie. Rapide : c'est la seule étape à relancer pour intégrer des vitesses de trafic, avec --segment-speed-file.", c: "osrm-customize " + BASE + ".osrm", f: [".osrm.mldgr", ".osrm.cell_metrics", "…"] },
+      { n: "routed", r: "le service", t: "osrm-routed sert l'API", d: "Charge le jeu de données préparé et répond sur le port 5000. On lui donne le nom de base : il retrouve seul tous les fichiers .osrm.*.", c: "osrm-routed --algorithm mld " + BASE + ".osrm", f: ["port 5000"] }
+    ],
+    ch: [
+      { n: "extract", r: "profil appliqué", t: "osrm-extract applique le profil", d: "Identique à la variante MLD : le profil Lua décide accès, sens et vitesse pour chaque voie. L'étape la plus gourmande.", c: "osrm-extract -p /opt/car.lua " + BASE + ".osm.pbf", f: [".osrm.ebg", ".osrm.geometry", ".osrm.names", ".osrm.nbg_nodes", "…"] },
+      { n: "contract", r: "raccourcis", t: "osrm-contract crée les raccourcis", d: "Classe les carrefours et ajoute les raccourcis, exactement comme la démo du haut. Changer une vitesse oblige à tout recontracter, ce qui est long sur une grande zone.", c: "osrm-contract " + BASE + ".osrm", f: [".osrm.hsgr", "…"] },
+      { n: "routed", r: "le service", t: "osrm-routed sert l'API", d: "Même binaire, avec l'algorithme CH.", c: "osrm-routed --algorithm ch " + BASE + ".osrm", f: ["port 5000"] }
+    ]
+  };
+  var algo = "mld", plIdx = 0;
+  function renderPipeline() {
+    var steps = STEPS[algo], box = $("pl");
+    box.innerHTML = "";
+    steps.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "god" + (i === plIdx ? " on" : i < plIdx ? " done" : ""); b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(i === plIdx));
+      b.innerHTML = "<b>" + s.n + "</b><span>" + s.r + "</span>";
+      b.addEventListener("click", function () { plIdx = i; renderPipeline(); });
+      box.appendChild(b);
+    });
+    var s = steps[plIdx];
+    $("pl-detail").innerHTML = "<h4>" + (plIdx + 1) + ". " + s.t + "</h4><p>" + s.d + "</p><div class='code'><pre>docker run -t -v \"$PWD:/data\" ghcr.io/project-osrm/osrm-backend \\\n  " + esc(s.c) + "</pre></div>" +
+      "<div class='files'>" + s.f.map(function (f) { return "<code>" + esc(f) + "</code>"; }).join("") + "</div>";
+  }
+  document.querySelectorAll("[data-algo]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      algo = b.getAttribute("data-algo"); plIdx = 0;
+      document.querySelectorAll("[data-algo]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      renderPipeline();
+    });
+  });
+  renderPipeline();
+
+  /* ---------- Request builder (chapter 6) ---------- */
+  var PTS = { A: [1.591129, 42.546504], B: [1.542721, 42.507667], C: [1.491200, 42.463600] };
+  function coord(p, swap) { return swap ? p[1] + "," + p[0] : p[0] + "," + p[1]; }
+  function renderBuilder() {
+    var svc = $("b-svc").value, host = $("b-host").value.trim() || "localhost:5000", swap = $("b-swap").checked;
+    var routeLike = svc === "route" || svc === "trip";
+    $("b-steps-l").hidden = !routeLike; $("b-geo-l").hidden = !routeLike; $("b-toll-l").hidden = svc === "nearest";
+    var pts = svc === "nearest" ? [PTS.B] : svc === "route" ? [PTS.A, PTS.B] : [PTS.A, PTS.B, PTS.C];
+    var q = [];
+    if (routeLike && $("b-steps").checked) q.push("steps=true");
+    if (routeLike && $("b-geo").checked) q.push("geometries=geojson");
+    if (svc !== "nearest" && $("b-toll").checked) q.push("exclude=toll");
+    if (svc === "nearest") q.push("number=3");
+    if (svc === "table") q.push("sources=0", "destinations=1;2", "annotations=duration,distance");
+    var url = "http://" + host + "/" + svc + "/v1/driving/" + pts.map(function (p) { return coord(p, swap); }).join(";") + (q.length ? "?" + q.join("&") : "");
+    var jq = { route: "'{code, distance: .routes[0].distance, duration: .routes[0].duration}'", trip: "'{code, distance: .trips[0].distance, duration: .trips[0].duration}'", nearest: "'.waypoints[] | {name, distance}'", table: "'{code, durations, distances}'" }[svc];
+    $("b-curl").textContent = "curl -s \\\n  \"" + url + "\" \\\n  | jq " + jq;
+    var w = $("b-warn");
+    w.hidden = !swap;
+    if (swap) w.textContent = "Avec lat,lon, le point Andorre-la-Vieille (42,5 N ; 1,5 E) devient 1,5 N ; 42,5 E, c'est-à-dire en Afrique de l'Est. OSRM répondra NoSegment : aucune route du jeu de données n'est proche.";
+  }
+  ["b-svc","b-host","b-swap","b-steps","b-geo","b-toll"].forEach(function (id) {
+    $(id).addEventListener("input", renderBuilder); $(id).addEventListener("change", renderBuilder);
+  });
+  renderBuilder();
+
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var txt = $(b.getAttribute("data-copy")).textContent;
+      var done = function () { b.textContent = "Copié"; setTimeout(function () { b.textContent = "Copier"; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt); done(); });
+      else { fallbackCopy(txt); done(); }
+    });
+  });
+  function fallbackCopy(txt) {
+    var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta);
+  }
+
+  /* ---------- Response explainer ---------- */
+  var R = {
+    code: "Ok quand tout va bien, sinon le code d'erreur (NoSegment, NoRoute…). À tester en premier : le statut HTTP ne suffit pas.",
+    routes: "La liste des itinéraires : un seul par défaut, plusieurs avec alternatives=true.",
+    distance: "La distance en mètres.",
+    duration: "La durée en secondes : le chiffre à afficher à l'utilisateur.",
+    weight: "La valeur minimisée par l'algorithme, selon la métrique du profil. Souvent égale à la durée pour la voiture, mais pas toujours : ne jamais l'afficher.",
+    weight_name: "Le nom de cette métrique, défini par le profil (routability pour car.lua).",
+    geometry: "Le tracé, en polyline précision 5 par défaut. geometries=geojson le renvoie en GeoJSON, directement affichable sur une carte.",
+    legs: "Une étape entre chaque paire de points, avec les instructions si steps=true.",
+    waypoints: "Les points réellement utilisés, après accroche au réseau.",
+    location: "Le point accroché, au format [lon, lat].",
+    name: "Le nom de la rue sur laquelle le point s'est accroché.",
+    wdistance: "La distance en mètres entre ton point et la route. Une grande valeur signale un point mal placé.",
+    hint: "Un identifiant interne de l'accroche, réutilisable pour accélérer une requête suivante sur le même point."
+  };
+  (function () {
+    function k(key, label) { return "<button type='button' data-k='" + key + "'>\"" + (label || key) + "\"</button>"; }
+    var html = "{\n" +
+      "  " + k("code") + ": \"Ok\",\n" +
+      "  " + k("routes") + ": [{\n" +
+      "    " + k("distance") + ": 6730.4,\n" +
+      "    " + k("duration") + ": 540.2,\n" +
+      "    " + k("weight") + ": 540.2,\n" +
+      "    " + k("weight_name") + ": \"routability\",\n" +
+      "    " + k("geometry") + ": \"…\",\n" +
+      "    " + k("legs") + ": [ … ]\n" +
+      "  }],\n" +
+      "  " + k("waypoints") + ": [{\n" +
+      "    " + k("location") + ": [1.591129, 42.546504],\n" +
+      "    " + k("name") + ": \"…\",\n" +
+      "    " + k("wdistance", "distance") + ": 3.2,\n" +
+      "    " + k("hint") + ": \"…\"\n" +
+      "  }, … ]\n}";
+    var box = $("resp"); box.innerHTML = html;
+    box.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        box.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        var key = b.getAttribute("data-k");
+        $("resp-explain").innerHTML = "<b>" + (key === "wdistance" ? "waypoints[].distance" : key) + "</b> : " + R[key];
+      });
+    });
+  })();
+
+  /* ---------- Quiz ---------- */
+  var QUIZ = [
+    { q: "On veut des itinéraires voiture et vélo avec OSRM. Combien de builds et de services ?", a: ["Un seul, le mode se choisit dans la requête", "Deux : un par profil", "Trois : un par algorithme"], ok: 1, e: "Le profil Lua est appliqué à osrm-extract : chaque mode a son propre jeu de fichiers et son propre osrm-routed." },
+    { q: "Une application veut éviter les péages pour un trajet en voiture. Que faire ?", a: ["Reconstruire avec un profil sans péages", "Ajouter exclude=toll à la requête", "Impossible avec OSRM"], ok: 1, e: "car.lua déclare la classe toll comme excluable : c'est l'une des rares préférences possibles à la requête." },
+    { q: "Dans l'URL, comment écrire le point de Toulouse (43,60 N ; 1,44 E) ?", a: ["43.6045,1.4440", "1.4440,43.6045"], ok: 1, e: "OSRM attend longitude puis latitude. L'inverse donne en général NoSegment." },
+    { q: "Pourquoi MLD plutôt que CH par défaut ?", a: ["Parce que MLD est plus rapide à chaque requête", "Parce qu'on peut changer les vitesses en relançant seulement osrm-customize", "Parce que CH ne gère pas la voiture"], ok: 1, e: "CH est un peu plus rapide à la requête, mais toute modification des poids demande de tout recontracter." },
+    { q: "De quoi dépend surtout la RAM d'osrm-routed ?", a: ["Du nombre de requêtes par seconde", "De la taille des fichiers .osrm.* chargés", "Du nombre de threads"], ok: 1, e: "Par défaut, le jeu de données est chargé en mémoire : la zone et le nombre de profils font la RAM. --mmap change ce comportement." },
+    { q: "Quelle sonde de vie pour le Deployment OSRM ?", a: ["httpGet sur /status", "Une requête /nearest sur un point connu de la zone", "Aucune sonde n'est possible"], ok: 1, e: "osrm-routed n'a pas d'endpoint de santé : une requête /nearest légère prouve que le service et les données répondent." }
+  ];
+  var answered = 0, good = 0, qbox = $("quiz-box");
+  QUIZ.forEach(function (item, qi) {
+    var d = document.createElement("div"); d.className = "q";
+    d.innerHTML = "<p class='qt'>" + (qi + 1) + ". " + item.q + "</p><div class='choices'></div><p class='fb' aria-live='polite'></p>";
+    var chs = d.querySelector(".choices");
+    item.a.forEach(function (txt, ai) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = txt;
+      b.addEventListener("click", function () {
+        var btns = chs.querySelectorAll("button");
+        btns.forEach(function (x) { x.disabled = true; });
+        btns[item.ok].classList.add("right");
+        if (ai !== item.ok) b.classList.add("wrong"); else good++;
+        answered++;
+        d.querySelector(".fb").innerHTML = "<b>" + (ai === item.ok ? "Exact." : "Pas tout à fait.") + "</b> " + item.e;
+        if (answered === QUIZ.length) $("quiz-score").textContent = "Score : " + good + " sur " + QUIZ.length + (good === QUIZ.length ? ". Prêt pour les tests en local." : ". Relis les chapitres concernés, puis recharge la page pour réessayer.");
+      });
+      chs.appendChild(b);
+    });
+    qbox.appendChild(d);
+  });
+
+  onScroll();
+})();
+</script>
+</body>
+</html>
